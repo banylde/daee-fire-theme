@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="zh-CN"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>四王盗火</title>
+<meta name="theme-color" content="#0f1115"><link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg"><link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="四王盗火">
+<style>
+/* unslop by Damir Sokolovsky (@heydamir), CC BY 4.0 — 大鹅基金看板家族样式 */
+:root{--bg:#121213;--card:#18181a;--raised:#212124;--line:rgba(237,237,237,.08);--fg:#ededed;--sec:#a1a1a6;--mute:#85858b;--up:#e5484d;--dn:#3fb37f;
+--serif:"Noto Serif CJK SC","Songti SC","STSong",serif;--sans:-apple-system,"PingFang SC","Noto Sans CJK SC","Microsoft YaHei",sans-serif;--mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,monospace;--ease:cubic-bezier(.22,1,.36,1)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+.page{max-width:1440px;margin:0 auto;padding:32px 32px calc(32px + env(safe-area-inset-bottom))}
+header.mast{display:flex;align-items:flex-start;gap:16px;padding-bottom:24px;border-bottom:1px solid var(--line);margin-bottom:24px}
+.seal{flex:none;width:44px;height:44px;border-radius:6px;background:var(--acc);color:#121213;font:500 26px/44px var(--serif);text-align:center}
+.brand{font-size:13px;color:var(--sec);line-height:20px}
+h1{font:500 28px/1.2 var(--serif);margin:0 0 4px;letter-spacing:.02em}
+h2{font-size:15px;font-weight:500;margin:0 0 12px;line-height:22px}
+.mute{color:var(--mute);font-size:12px;line-height:18px}
+#meta{font-family:var(--mono),var(--sans);font-size:12px;color:var(--mute);margin-top:8px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 24px;margin:0 0 16px}
+.wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--card);margin:0 0 16px}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{padding:8px 12px;height:36px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}
+tbody tr:last-child td{border-bottom:0}
+th{position:sticky;top:0;background:var(--raised);cursor:pointer;user-select:none;font-weight:400;font-size:12px;color:var(--mute);transition:color .15s var(--ease)}
+th:hover,th.s{color:var(--fg)}
+td{font-family:var(--mono),var(--sans);font-size:13px}
+td.l,th.l{text-align:left;font-family:var(--sans)}
+.p{color:var(--up)}.n{color:var(--dn)}
+.yes{color:var(--sec)}.no{color:var(--mute)}
+.tag{font:12px/18px var(--sans);padding:0 6px;border-radius:4px;margin-left:8px;color:var(--sec);border:1px solid var(--line);background:var(--raised)}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+footer{margin:32px 0 0;padding-top:16px;border-top:1px solid var(--line);color:var(--mute);font-size:12px;text-align:left}
+footer .first{color:var(--sec)}
+@media(max-width:640px){.page{padding:16px 16px calc(24px + env(safe-area-inset-bottom))}h1{font-size:24px}.seal{width:40px;height:40px;font-size:22px;line-height:40px}header.mast{gap:12px;padding-bottom:16px;margin-bottom:16px}.card{padding:16px}th,td{padding:8px 10px}}
+:root{--acc:#f0a36a;--acc-ink:#f2c39a}
+.tagline{font-size:13px;color:var(--sec);margin-top:4px}
+.warnbar{border-left:2px solid var(--acc);color:var(--sec);font-size:13px;padding:12px 16px;border-radius:8px}.warnbar b{color:var(--fg);font-weight:500}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
+.chips span{font-size:13px;line-height:20px;padding:6px 10px;border-radius:8px;background:var(--raised);border:1px solid var(--line)}
+.chips b{font-weight:500;margin-right:6px}
+.st-atk{color:var(--up)}.st-ebb{color:var(--dn)}.st-wait{color:var(--acc-ink)}.st-stop{color:var(--up)}
+table.min{min-width:720px}
+td.wrap,th.wrap{white-space:normal;text-align:left;font-family:var(--sans);line-height:20px;height:auto}
+#rule{font-size:13px;line-height:22px;color:var(--sec)}#rule b{font-weight:500;color:var(--fg)}
+#rule p{margin:8px 0}
+</style></head><body>
+<div class="page">
+<header class="mast"><div class="seal" aria-hidden="true">火</div><div>
+<div class="brand">大鹅基金 · 火部题材短线看板</div>
+<h1>四王盗火</h1>
+<div class="tagline">火部 · 题材短线</div>
+<div id="meta">加载中…</div></div></header>
+<div class="card warnbar" id="warn"></div>
+<div class="card" id="sent"></div>
+<div class="wrap"><table class="min" id="themes"><thead><tr></tr></thead><tbody></tbody></table></div>
+<div class="wrap"><table class="min" id="pool"><thead><tr></tr></thead><tbody></tbody></table></div>
+<div class="card" id="kings"></div>
+<div class="card" id="paper"></div>
+<div class="card" id="rule"></div>
+<footer><span class="first">短线是负和游戏。仅供研究，不构成推荐。实盘前请核对最新交易规则。</span><br>仓库内没有账户、密钥或真实持仓。</footer>
+</div>
+<script>
+const ST={pass:'<span class="yes">通过</span>',fail:'<span class="no">未过</span>',manual:'<span class="st-wait">待人工确认</span>',missing:'<span class="no">缺数据</span>'};
+const mark=c=>ST[c.state]||"缺数据";
+const tip=(c)=>`${mark(c)} ${c.text||""}`;
+function chip(k,v){return `<span><b>${k}</b>${v}</span>`}
+fetch("data/latest.json",{cache:"no-store"}).then(r=>r.json()).then(d=>{
+const C=d.config,S=d.sentiment,sm={进攻:"st-atk",观望:"st-wait",退潮:"st-ebb",暂停入选:"st-stop"}[S.status]||"";
+document.getElementById("meta").textContent=`数据日期 ${d.data_date} · 更新于 ${d.updated_at}（北京时间） · 前一交易日 ${d.prev_date||"—"} · 下次观察 ${d.next_date}（遇休市顺延） · 数据源 ${d.sources.join(" / ")}`+(d.failed.length?` · 失败：${d.failed.join("；")}`:"");
+document.getElementById("warn").innerHTML=`四只来自四个题材，单只 <b>${C.weight_each}%</b>，合计不超过 <b>${C.weight_cap}%</b>。原策略写的是最多 3 只、单只 10%–15%，与「总仓位 ≤30% 且持有四只」对不上，本页改成单只 ${C.weight_each}%。情绪退潮时新开仓压到半仓以下（最多 1 只）。<b>${d.scope_note}</b>`;
+document.getElementById("sent").innerHTML=`<h2>情绪面板 · <span class="${sm}">${S.status}</span></h2>
+<div class="chips">${chip("涨停",S.zt??"缺数据")}${chip("跌停",S.dt??"缺数据")}${chip("炸板",S.zb??"缺数据")}${chip("炸板率",S.zb_rate==null?"缺数据":S.zb_rate+"%")}${chip("连板高度",S.height??"缺数据")}${chip("昨日涨停今日收益",S.yzt_avg==null?"缺数据":(S.yzt_avg>0?"+":"")+S.yzt_avg+"%")}${chip("昨日跌停",S.dt_prev??"缺数据")}${chip("昨日高度",S.height_prev??"缺数据")}${chip("高度标断板",S.height_broken==null?"缺数据":S.height_broken?"是":"否")}</div>
+<div class="mute">${S.why}</div>`;
+const th=[["name","题材"],["n","涨停"],["height","最高板"],["day","第几天"],["catalyst","催化"],["echelon","梯队"],["capacity","容量"],["qualified","正式可做"]];
+document.querySelector("#themes thead tr").innerHTML=`<th class="l">题材</th>`+th.slice(1).map(x=>`<th class="${x[0]==="capacity"?"wrap":""}">${x[1]}</th>`).join("");
+document.querySelector("#themes tbody").innerHTML=(d.themes.length?d.themes:[{name:"（无）",n:"—",height:"—",day:{state:"missing",text:"缺数据"},catalyst:{state:"missing",text:""},echelon:{state:"missing",text:""},capacity:{state:"missing",text:""},qualified:false}]).map(t=>`<tr>
+<td class="l">${t.name}${t.denied?'<span class="tag">字面</span>':""}</td>
+<td>${t.n}</td><td>${t.height}</td>
+<td class="wrap">${tip(t.day)}</td><td class="wrap">${tip(t.catalyst)}</td><td class="wrap">${tip(t.echelon)}</td><td class="wrap">${tip(t.capacity)}</td>
+<td>${t.qualified?'<span class="yes">可做</span>':'<span class="no">不可做</span>'}</td></tr>`).join("")||`<tr><td class="l" colspan="8">缺数据</td></tr>`;
+document.querySelector("#pool thead tr").innerHTML=["代码","名称","题材","角色","连板","流通市值(亿)","状态","未核实 / 未过"].map((x,i)=>`<th class="${i<4||i>5?"l":""} ${i===7?"wrap":""}">${x}</th>`).join("");
+document.querySelector("#pool tbody").innerHTML=(d.pool||[]).map(r=>`<tr>
+<td class="l">${r.code}</td><td class="l">${r.name}</td><td class="l">${r.theme}</td><td class="l">${r.role}</td>
+<td>${r.lbc}</td><td>${r.float_yi==null?"缺数据":r.float_yi}</td><td class="l">${r.status}</td>
+<td class="wrap">${(r.blocks||[]).join("；")||"—"}</td></tr>`).join("")||`<tr><td class="l" colspan="8">股票池为空</td></tr>`;
+const ks=d.kings||[];
+document.getElementById("kings").innerHTML=`<h2>四王</h2>`+(ks.length?`<div class="wrap"><table><thead><tr><th class="l">代码</th><th class="l">名称</th><th class="l">题材</th><th class="l">角色</th><th class="l">观察买点</th><th class="l">止损位</th><th>建议仓位</th></tr></thead><tbody>${ks.map(k=>`<tr><td class="l">${k.code}</td><td class="l">${k.name}</td><td class="l">${k.theme}</td><td class="l">${k.role}</td><td class="wrap">${k.buy||"缺数据"}</td><td class="wrap">${k.stop||"缺数据"}</td><td>${k.weight}%</td></tr>`).join("")}</tbody></table></div>`:`<p>本日四王留空，不凑数。名单变动：${(d.official.changes||[]).join("；")||"无"}。有正式四王之后，这里记调入调出。</p>`);
+document.getElementById("paper").innerHTML=`<h2>纸面组合战绩</h2><div class="chips">${chip("胜率","缺数据")}${chip("盈亏比","缺数据")}${chip("最大单笔亏损","缺数据")}${chip("已平仓","0")}</div><div class="mute">${d.paper.note}。预定规则：入选后的下一交易日按开盘价进场；遵守 T+1；涨停买不进、跌停卖不出；计滑点；止损成交价不保证正好在 -5%。单笔止损为买入价下方 ${C.stop_pct}%，或跌破买入逻辑位。单日亏损达到 2% 当天停手。连亏 3 笔空仓 3 天。冲高不板、放量滞涨先卖一半；3 个交易日没有表现离场。退潮时减到半仓以下。</div>`;
+document.getElementById("rule").innerHTML=`<h2 style="color:var(--fg)">口径（研究，不下单）</h2>
+<p><b>市场</b>：T+1。主板 10%，创业板和科创板 20%，ST 5%，北交所 30%。</p>
+<p><b>可做题材要四条一起过</b>：有催化（脚本定不了就标待人工确认，写入 config.json 的 manual_catalyst 才算通过）；梯队为当日涨停至少 ${C.echelon_min} 只且有 ${C.lbc_min} 板以上；容量为板块成交额放大且有中军；处在启动或加速的第 2 到 4 天。第 5 天以上和一日游不做。天数要靠 data/history 逐日积累，本轮没有这份档案，天数一律缺数据。</p>
+<p><b>归类</b>：用同花顺涨停原因，按「+」分段，跳过三季报、重组、国资这类标签，取第一个词典题材。带引号或写明字辈的，归入字面博弈，不算催化。词典在 config.json。原因对不上的涨停不进题材梯队（本页未归类 ${d.untagged} 只${(d.untagged_names||[]).length?"："+(d.untagged_names||[]).join("、"):""}）。</p>
+<p><b>个股</b>：龙头、补涨、中军这个顺序。回避一字板、尾盘偷袭（首次封板 ≥14:30，东财与同花顺取更晚的一个）、纯字面蹭名、ST 和退市风险、流通市值 &lt; ${C.float_min_yi} 亿。正式池还要流通市值 ${C.float_min_yi}–${C.float_max_yi} 亿（中军放到 ${C.float_mid_max_yi} 亿）、近 20 日日均成交额 &gt; ${C.amount_avg_yi} 亿、没有减持/立案/业绩暴雷、不在交易所重点监控。后几项本轮大多是缺数据，所以表里是「未正式入池」。</p>
+<p><b>买点</b>：只有盘后数据。正式入选后给次日观察买点（涨停价或关键支撑），高开超过 ${C.no_chase_gap}% 不追。本页四王为空，不编造买点和止损价。</p>
+<p><b>情绪</b>：涨停、跌停、高度、炸板率、昨日涨停今日收益五项目齐才给进攻 / 观望 / 退潮。退潮看三件事：高度标断板、跌停数比前一交易日增加、昨日涨停今日平均收益为负，有一件即退潮。缺任何一项则暂停入选。进攻阈值（涨停≥${C.kings?60:60}、炸板率≤25%、昨日涨停收益≥1%）写在脚本里，待确认。</p>
+<p><b>重点监控</b>：${d.monitor_ok?`东财在册且区间覆盖 ${d.data_date} 的有 ${d.monitor.length} 条`:"缺数据"}。已过期、从名单摘掉的历史监管，这份静态文件里可能没有。</p>
+<p><b>已知缺口</b>：${d.failed.join("；")||"本次抓取没有失败项"}。开盘啦题材强度接口有响应但名单为空，本轮不用它。</p>`;
+}).catch(e=>{document.getElementById("meta").textContent="数据加载失败："+e});
+if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js");
+</script></body></html>

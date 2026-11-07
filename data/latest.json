@@ -1,0 +1,748 @@
+{
+ "updated_at": "2026-11-07 22:38",
+ "data_date": "2026-11-06",
+ "prev_date": "2026-11-05",
+ "next_date": "2026-11-09",
+ "sources": [
+  "eastmoney-zt",
+  "ths-limit-up",
+  "eastmoney-monitor",
+  "eastmoney-prev"
+ ],
+ "failed": [],
+ "ths_total": 32,
+ "zt_count": 32,
+ "untagged": 4,
+ "untagged_names": [
+  "南侨食品 605339",
+  "城市传媒 600229",
+  "润贝航科 001316",
+  "康冠科技 001308"
+ ],
+ "sentiment": {
+  "status": "退潮",
+  "why": "跌停数增加（0→15）；昨日涨停今日平均收益为负（-0.06%）",
+  "zt": 32,
+  "dt": 15,
+  "zb": 14,
+  "height": 5,
+  "zb_rate": 30.4,
+  "yzt_avg": -0.06,
+  "prev_date": "2026-11-05",
+  "dt_prev": 0,
+  "height_prev": 4,
+  "height_broken": false,
+  "ebb": [
+   "跌停数增加（0→15）",
+   "昨日涨停今日平均收益为负（-0.06%）"
+  ],
+  "missing": []
+ },
+ "themes": [
+  {
+   "id": "pv",
+   "name": "光伏",
+   "n": 5,
+   "height": 5,
+   "has_lbc2": true,
+   "denied": false,
+   "qualified": false,
+   "catalyst": {
+    "state": "manual",
+    "text": "待人工确认"
+   },
+   "echelon": {
+    "state": "pass",
+    "text": "涨停5只，最高5板，有2板以上"
+   },
+   "capacity": {
+    "state": "missing",
+    "text": "成交额为前5日中位数的 1.30 倍（门槛 1.20，已放大）；中军：缺数据（本轮未核市值与均线）"
+   },
+   "day": {
+    "state": "missing",
+    "text": "缺数据：尚未落档 data/history，不能推定第几天"
+   },
+   "members": [
+    {
+     "code": "002578",
+     "name": "闽发铝业",
+     "lbc": 5,
+     "reason": "光伏边框+液冷铝材+机器人布局+三季报扭亏",
+     "limit_type": "T字板",
+     "hs": 12.5,
+     "float_yi": 43.14,
+     "tail": false,
+     "fbt": "09:25:00",
+     "hy": "工业金属",
+     "close": 5.01
+    },
+    {
+     "code": "603381",
+     "name": "永臻股份",
+     "lbc": 4,
+     "reason": "光伏+电池铝箔+人形机器人+三季报增长",
+     "limit_type": "一字板",
+     "hs": 5.29,
+     "float_yi": 29.48,
+     "tail": false,
+     "fbt": "09:25:01",
+     "hy": "光伏设备",
+     "close": 20.74
+    },
+    {
+     "code": "301697",
+     "name": "贝特利",
+     "lbc": 3,
+     "reason": "光伏银粉+低温光伏浆料+电子皮肤+次新股",
+     "limit_type": "换手板",
+     "hs": 40.68,
+     "float_yi": 16.1,
+     "tail": false,
+     "fbt": "09:34:06",
+     "hy": "光伏设备",
+     "close": 36.6
+    },
+    {
+     "code": "600207",
+     "name": "安彩高科",
+     "lbc": 1,
+     "reason": "光伏玻璃+高透产品+河南国资",
+     "limit_type": "换手板",
+     "hs": 3.28,
+     "float_yi": 53.16,
+     "tail": false,
+     "fbt": "09:32:05",
+     "hy": "光伏设备",
+     "close": 4.88
+    },
+    {
+     "code": "001258",
+     "name": "立新能源",
+     "lbc": 1,
+     "reason": "风电光伏+疆电外送+三季报增长",
+     "limit_type": "换手板",
+     "hs": 3.62,
+     "float_yi": 89.32,
+     "tail": false,
+     "fbt": "09:34:36",
+     "hy": "电力",
+     "close": 9.57
+    }
+   ]
+  },
+  {
+   "id": "zibei:东方",
+   "name": "字辈·东方",
+   "n": 5,
+   "height": 1,
+   "has_lbc2": false,
+   "denied": true,
+   "qualified": false,
+   "catalyst": {
+    "state": "fail",
+    "text": "字面连名，不算事件催化"
+   },
+   "echelon": {
+    "state": "fail",
+    "text": "涨停5只，最高1板，没有2板以上"
+   },
+   "capacity": {
+    "state": "missing",
+    "text": "缺数据：未绑定板块，成交额和中军未核"
+   },
+   "day": {
+    "state": "missing",
+    "text": "缺数据：尚未落档 data/history，不能推定第几天"
+   },
+   "members": [
+    {
+     "code": "603366",
+     "name": "日出东方",
+     "lbc": 1,
+     "reason": "“东方”+储能+空气能热泵+光伏",
+     "limit_type": "换手板",
+     "hs": 6.92,
+     "float_yi": 73.09,
+     "tail": false,
+     "fbt": "09:45:14",
+     "hy": "厨卫电器",
+     "close": 8.99
+    },
+    {
+     "code": "002310",
+     "name": "东方新能",
+     "lbc": 1,
+     "reason": "“东方”+光伏+重组+三季报扭亏",
+     "limit_type": "换手板",
+     "hs": 2.81,
+     "float_yi": 102.06,
+     "tail": false,
+     "fbt": "09:48:45",
+     "hy": "电力",
+     "close": 2.32
+    },
+    {
+     "code": "600327",
+     "name": "大东方",
+     "lbc": 1,
+     "reason": "“东方”+百货零售+儿科医疗+回购注销",
+     "limit_type": "换手板",
+     "hs": 20.75,
+     "float_yi": 43.44,
+     "tail": false,
+     "fbt": "09:57:20",
+     "hy": "一般零售",
+     "close": 4.91
+    },
+    {
+     "code": "600278",
+     "name": "东方创业",
+     "lbc": 1,
+     "reason": "“东方”+贸易+现代物流+上海国企",
+     "limit_type": "换手板",
+     "hs": 5.99,
+     "float_yi": 61.27,
+     "tail": false,
+     "fbt": "10:04:18",
+     "hy": "贸易Ⅱ",
+     "close": 7.12
+    },
+    {
+     "code": "002889",
+     "name": "东方嘉盛",
+     "lbc": 1,
+     "reason": "“东方”+光刻机保税维修+智慧仓",
+     "limit_type": "换手板",
+     "hs": 14.23,
+     "float_yi": 37.47,
+     "tail": false,
+     "fbt": "10:22:18",
+     "hy": "物流",
+     "close": 14.91
+    }
+   ]
+  },
+  {
+   "id": "film",
+   "name": "影视传媒",
+   "n": 3,
+   "height": 5,
+   "has_lbc2": true,
+   "denied": false,
+   "qualified": false,
+   "catalyst": {
+    "state": "manual",
+    "text": "待人工确认"
+   },
+   "echelon": {
+    "state": "fail",
+    "text": "涨停3只，最高5板，有2板以上"
+   },
+   "capacity": {
+    "state": "missing",
+    "text": "成交额为前5日中位数的 1.05 倍（门槛 1.20，未放大）；中军：缺数据（本轮未核市值与均线）"
+   },
+   "day": {
+    "state": "missing",
+    "text": "缺数据：尚未落档 data/history，不能推定第几天"
+   },
+   "members": [
+    {
+     "code": "601599",
+     "name": "浙文影业",
+     "lbc": 5,
+     "reason": "AI漫剧+微短剧+三季报增长",
+     "limit_type": "T字板",
+     "hs": 21.97,
+     "float_yi": 58.96,
+     "tail": false,
+     "fbt": "09:25:01",
+     "hy": "纺织制造",
+     "close": 5.08
+    },
+    {
+     "code": "601595",
+     "name": "上海电影",
+     "lbc": 1,
+     "reason": "AI影视+即梦合作+院线+IP",
+     "limit_type": "换手板",
+     "hs": 4.95,
+     "float_yi": 160.28,
+     "tail": false,
+     "fbt": "10:27:30",
+     "hy": "影视院线",
+     "close": 35.76
+    },
+    {
+     "code": "002712",
+     "name": "思美传媒",
+     "lbc": 1,
+     "reason": "AI营销+AI漫剧+四川国资",
+     "limit_type": "换手板",
+     "hs": 8.2,
+     "float_yi": 32.24,
+     "tail": false,
+     "fbt": "10:42:24",
+     "hy": "广告营销",
+     "close": 5.96
+    }
+   ]
+  },
+  {
+   "id": "zibei:羊",
+   "name": "字辈·羊",
+   "n": 3,
+   "height": 4,
+   "has_lbc2": true,
+   "denied": true,
+   "qualified": false,
+   "catalyst": {
+    "state": "fail",
+    "text": "字面连名，不算事件催化"
+   },
+   "echelon": {
+    "state": "fail",
+    "text": "涨停3只，最高4板，有2板以上"
+   },
+   "capacity": {
+    "state": "missing",
+    "text": "缺数据：未绑定板块，成交额和中军未核"
+   },
+   "day": {
+    "state": "missing",
+    "text": "缺数据：尚未落档 data/history，不能推定第几天"
+   },
+   "members": [
+    {
+     "code": "002088",
+     "name": "鲁阳节能",
+     "lbc": 4,
+     "reason": "“羊”字辈+陶瓷纤维+锂电隔热",
+     "limit_type": "换手板",
+     "hs": 12.43,
+     "float_yi": 56.11,
+     "tail": true,
+     "fbt": "14:27:18",
+     "hy": "装修建材",
+     "close": 11.09
+    },
+    {
+     "code": "002086",
+     "name": "东方海洋",
+     "lbc": 2,
+     "reason": "“羊”字辈+海洋养殖+体外诊断",
+     "limit_type": "换手板",
+     "hs": 42.55,
+     "float_yi": 62.76,
+     "tail": false,
+     "fbt": "10:02:33",
+     "hy": "农产品加",
+     "close": 3.97
+    },
+    {
+     "code": "000525",
+     "name": "红太阳",
+     "lbc": 1,
+     "reason": "“羊”字辈+百草枯+农业无人机+三季报扭亏",
+     "limit_type": "换手板",
+     "hs": 11.34,
+     "float_yi": 55.81,
+     "tail": false,
+     "fbt": "13:39:51",
+     "hy": "农化制品",
+     "close": 5.02
+    }
+   ]
+  }
+ ],
+ "pool": [
+  {
+   "code": "002578",
+   "name": "闽发铝业",
+   "theme": "光伏",
+   "role": "龙头",
+   "lbc": 5,
+   "hs": 12.5,
+   "float_yi": 43.14,
+   "limit_type": "T字板",
+   "reason": "光伏边框+液冷铝材+机器人布局+三季报扭亏",
+   "status": "未正式入池",
+   "blocks": [
+    "20日均成交额：缺数据",
+    "公告排雷：缺数据"
+   ]
+  },
+  {
+   "code": "603381",
+   "name": "永臻股份",
+   "theme": "光伏",
+   "role": "回避·一字",
+   "lbc": 4,
+   "hs": 5.29,
+   "float_yi": 29.48,
+   "limit_type": "一字板",
+   "reason": "光伏+电池铝箔+人形机器人+三季报增长",
+   "status": "未正式入池",
+   "blocks": [
+    "回避·一字",
+    "20日均成交额：缺数据",
+    "公告排雷：缺数据"
+   ]
+  },
+  {
+   "code": "301697",
+   "name": "贝特利",
+   "theme": "光伏",
+   "role": "连板",
+   "lbc": 3,
+   "hs": 40.68,
+   "float_yi": 16.1,
+   "limit_type": "换手板",
+   "reason": "光伏银粉+低温光伏浆料+电子皮肤+次新股",
+   "status": "未正式入池",
+   "blocks": [
+    "20日均成交额：缺数据",
+    "公告排雷：缺数据"
+   ]
+  },
+  {
+   "code": "001258",
+   "name": "立新能源",
+   "theme": "光伏",
+   "role": "补涨",
+   "lbc": 1,
+   "hs": 3.62,
+   "float_yi": 89.32,
+   "limit_type": "换手板",
+   "reason": "风电光伏+疆电外送+三季报增长",
+   "status": "未正式入池",
+   "blocks": [
+    "20日均成交额：缺数据",
+    "公告排雷：缺数据"
+   ]
+  },
+  {
+   "code": "600207",
+   "name": "安彩高科",
+   "theme": "光伏",
+   "role": "补涨",
+   "lbc": 1,
+   "hs": 3.28,
+   "float_yi": 53.16,
+   "limit_type": "换手板",
+   "reason": "光伏玻璃+高透产品+河南国资",
+   "status": "未正式入池",
+   "blocks": [
+    "20日均成交额：缺数据",
+    "公告排雷：缺数据"
+   ]
+  },
+  {
+   "code": "002310",
+   "name": "东方新能",
+   "theme": "字辈·东方",
+   "role": "补涨",
+   "lbc": 1,
+   "hs": 2.81,
+   "float_yi": 102.06,
+   "limit_type": "换手板",
+   "reason": "“东方”+光伏+重组+三季报扭亏",
+   "status": "未正式入池",
+   "blocks": [
+    "20日均成交额：缺数据",
+    "公告排雷：缺数据"
+   ]
+  },
+  {
+   "code": "002889",
+   "name": "东方嘉盛",
+   "theme": "字辈·东方",
+   "role": "补涨",
+   "lbc": 1,
+   "hs": 14.23,
+   "float_yi": 37.47,
+   "limit_type": "换手板",
+   "reason": "“东方”+光刻机保税维修+智慧仓",
+   "status": "未正式入池",
+   "blocks": [
+    "20日均成交额：缺数据",
+    "公告排雷：缺数据"
+   ]
+  },
+  {
+   "code": "600278",
+   "name": "东方创业",
+   "theme": "字辈·东方",
+   "role": "补涨",
+   "lbc": 1,
+   "hs": 5.99,
+   "float_yi": 61.27,
+   "limit_type": "换手板",
+   "reason": "“东方”+贸易+现代物流+上海国企",
+   "status": "未正式入池",
+   "blocks": [
+    "20日均成交额：缺数据",
+    "公告排雷：缺数据"
+   ]
+  },
+  {
+   "code": "600327",
+   "name": "大东方",
+   "theme": "字辈·东方",
+   "role": "补涨",
+   "lbc": 1,
+   "hs": 20.75,
+   "float_yi": 43.44,
+   "limit_type": "换手板",
+   "reason": "“东方”+百货零售+儿科医疗+回购注销",
+   "status": "未正式入池",
+   "blocks": [
+    "20日均成交额：缺数据",
+    "公告排雷：缺数据"
+   ]
+  },
+  {
+   "code": "603366",
+   "name": "日出东方",
+   "theme": "字辈·东方",
+   "role": "补涨",
+   "lbc": 1,
+   "hs": 6.92,
+   "float_yi": 73.09,
+   "limit_type": "换手板",
+   "reason": "“东方”+储能+空气能热泵+光伏",
+   "status": "未正式入池",
+   "blocks": [
+    "20日均成交额：缺数据",
+    "公告排雷：缺数据"
+   ]
+  },
+  {
+   "code": "002088",
+   "name": "鲁阳节能",
+   "theme": "字辈·羊",
+   "role": "回避·尾盘",
+   "lbc": 4,
+   "hs": 12.43,
+   "float_yi": 56.11,
+   "limit_type": "换手板",
+   "reason": "“羊”字辈+陶瓷纤维+锂电隔热",
+   "status": "未正式入池",
+   "blocks": [
+    "回避·尾盘",
+    "20日均成交额：缺数据",
+    "公告排雷：缺数据"
+   ]
+  },
+  {
+   "code": "002086",
+   "name": "东方海洋",
+   "theme": "字辈·羊",
+   "role": "补涨",
+   "lbc": 2,
+   "hs": 42.55,
+   "float_yi": 62.76,
+   "limit_type": "换手板",
+   "reason": "“羊”字辈+海洋养殖+体外诊断",
+   "status": "未正式入池",
+   "blocks": [
+    "20日均成交额：缺数据",
+    "公告排雷：缺数据"
+   ]
+  },
+  {
+   "code": "000525",
+   "name": "红太阳",
+   "theme": "字辈·羊",
+   "role": "补涨",
+   "lbc": 1,
+   "hs": 11.34,
+   "float_yi": 55.81,
+   "limit_type": "换手板",
+   "reason": "“羊”字辈+百草枯+农业无人机+三季报扭亏",
+   "status": "未正式入池",
+   "blocks": [
+    "20日均成交额：缺数据",
+    "公告排雷：缺数据"
+   ]
+  },
+  {
+   "code": "601599",
+   "name": "浙文影业",
+   "theme": "影视传媒",
+   "role": "龙头",
+   "lbc": 5,
+   "hs": 21.97,
+   "float_yi": 58.96,
+   "limit_type": "T字板",
+   "reason": "AI漫剧+微短剧+三季报增长",
+   "status": "未正式入池",
+   "blocks": [
+    "20日均成交额：缺数据",
+    "公告排雷：缺数据"
+   ]
+  },
+  {
+   "code": "002712",
+   "name": "思美传媒",
+   "theme": "影视传媒",
+   "role": "补涨",
+   "lbc": 1,
+   "hs": 8.2,
+   "float_yi": 32.24,
+   "limit_type": "换手板",
+   "reason": "AI营销+AI漫剧+四川国资",
+   "status": "未正式入池",
+   "blocks": [
+    "20日均成交额：缺数据",
+    "公告排雷：缺数据"
+   ]
+  },
+  {
+   "code": "601595",
+   "name": "上海电影",
+   "theme": "影视传媒",
+   "role": "补涨",
+   "lbc": 1,
+   "hs": 4.95,
+   "float_yi": 160.28,
+   "limit_type": "换手板",
+   "reason": "AI影视+即梦合作+院线+IP",
+   "status": "未正式入池",
+   "blocks": [
+    "流通市值160.3亿，不在15–150亿",
+    "20日均成交额：缺数据",
+    "公告排雷：缺数据"
+   ]
+  }
+ ],
+ "kings": [],
+ "official": {
+  "rebalance_date": "2026-11-06",
+  "next_rebalance": "2026-11-09",
+  "freq": "daily",
+  "codes": [],
+  "prev_codes": [],
+  "prev_rebalance_date": "2026-11-06",
+  "changes": [
+   "没有题材同时通过催化、梯队、容量、天数",
+   "情绪退潮，新开仓压到半仓以下（最多1只、7.5%）",
+   "四王留空，不凑数"
+  ],
+  "items": [],
+  "computed_at": "2026-11-07 22:38"
+ },
+ "monitor": [
+  {
+   "code": "513310",
+   "name": "中韩芯片",
+   "start": "2026-11-05",
+   "end": "2026-11-18",
+   "market": "1"
+  },
+  {
+   "code": "159509",
+   "name": "纳指科技",
+   "start": "2026-11-04",
+   "end": "2026-11-17",
+   "market": "0"
+  },
+  {
+   "code": "513850",
+   "name": "美国50",
+   "start": "2026-11-03",
+   "end": "2026-11-16",
+   "market": "1"
+  },
+  {
+   "code": "002724",
+   "name": "海洋王",
+   "start": "2026-11-02",
+   "end": "2026-11-13",
+   "market": "0"
+  },
+  {
+   "code": "605255",
+   "name": "天普股份",
+   "start": "2026-10-30",
+   "end": "2026-11-12",
+   "market": "1"
+  },
+  {
+   "code": "603843",
+   "name": "*ST正平",
+   "start": "2026-10-30",
+   "end": "2026-11-12",
+   "market": "1"
+  },
+  {
+   "code": "600825",
+   "name": "新华传媒",
+   "start": "2026-10-30",
+   "end": "2026-11-12",
+   "market": "1"
+  },
+  {
+   "code": "513500",
+   "name": "标普500",
+   "start": "2026-10-29",
+   "end": "2026-11-11",
+   "market": "1"
+  },
+  {
+   "code": "513390",
+   "name": "纳指基金",
+   "start": "2026-10-29",
+   "end": "2026-11-11",
+   "market": "1"
+  },
+  {
+   "code": "513110",
+   "name": "纳指100",
+   "start": "2026-10-29",
+   "end": "2026-11-11",
+   "market": "1"
+  },
+  {
+   "code": "513100",
+   "name": "纳指ETF",
+   "start": "2026-10-29",
+   "end": "2026-11-11",
+   "market": "1"
+  },
+  {
+   "code": "513870",
+   "name": "纳指指数",
+   "start": "2026-10-27",
+   "end": "2026-11-09",
+   "market": "1"
+  },
+  {
+   "code": "002731",
+   "name": "*ST萃华",
+   "start": "2026-10-23",
+   "end": "2026-11-12",
+   "market": "0"
+  }
+ ],
+ "monitor_ok": true,
+ "paper": {
+  "status": "缺数据",
+  "note": "纸面胜率、盈亏比、最大单笔亏损与成交记录下一轮再做"
+ },
+ "config": {
+  "kings": 4,
+  "weight_each": 7.5,
+  "weight_cap": 30,
+  "stop_pct": 5,
+  "no_chase_gap": 8,
+  "echelon_min": 5,
+  "lbc_min": 2,
+  "float_min_yi": 15,
+  "float_max_yi": 150,
+  "float_mid_max_yi": 300,
+  "amount_avg_yi": 2
+ },
+ "scope_note": "本轮只核当日涨停结构、情绪和板块成交额放大的比例。题材第几天、中军趋势、20日成交额、公告排雷、纸面成交都还是缺数据。"
+}
