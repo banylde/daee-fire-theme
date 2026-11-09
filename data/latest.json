@@ -1,6 +1,9 @@
 {
  "updated_at": "2026-11-09 20:04",
  "data_date": "2026-11-09",
+ "stale": false,
+ "stale_reason": "",
+ "expected_date": "2026-11-09",
  "prev_date": "2026-11-06",
  "next_date": "2026-11-10",
  "sources": [
@@ -70,7 +73,7 @@
    },
    "day": {
     "state": "missing",
-    "text": "缺数据：尚未落档 data/history，不能推定第几天"
+    "text": "缺数据：还没有逐日题材档案，不能推定第几天"
    },
    "members": [
     {
@@ -279,7 +282,7 @@
    },
    "day": {
     "state": "missing",
-    "text": "缺数据：尚未落档 data/history，不能推定第几天"
+    "text": "缺数据：还没有逐日题材档案，不能推定第几天"
    },
    "members": [
     {
@@ -397,7 +400,7 @@
    },
    "day": {
     "state": "missing",
-    "text": "缺数据：尚未落档 data/history，不能推定第几天"
+    "text": "缺数据：还没有逐日题材档案，不能推定第几天"
    },
    "members": [
     {
@@ -489,7 +492,7 @@
    },
    "day": {
     "state": "missing",
-    "text": "缺数据：尚未落档 data/history，不能推定第几天"
+    "text": "缺数据：还没有逐日题材档案，不能推定第几天"
    },
    "members": [
     {
@@ -555,7 +558,7 @@
    },
    "day": {
     "state": "missing",
-    "text": "缺数据：尚未落档 data/history，不能推定第几天"
+    "text": "缺数据：还没有逐日题材档案，不能推定第几天"
    },
    "members": [
     {
@@ -1257,7 +1260,8 @@
  "monitor_ok": true,
  "paper": {
   "status": "缺数据",
-  "note": "纸面胜率、盈亏比、最大单笔亏损与成交记录下一轮再做"
+  "fill": "信号在信号日收盘后计算，纸面成交记在下一交易日开盘（T+1 open）。涨停买不进，跌停卖不出。",
+  "note": "胜率、盈亏比、最大单笔亏损没有成交记录，保持缺数据，不编造。"
  },
  "config": {
   "kings": 4,

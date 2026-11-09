@@ -38,6 +38,10 @@ footer .first{color:var(--sec)}
 :root{--acc:#f0a36a;--acc-ink:#f2c39a}
 .tagline{font-size:13px;color:var(--sec);margin-top:4px}
 .warnbar{border-left:2px solid var(--acc);color:var(--sec);font-size:13px;padding:12px 16px;border-radius:8px}.warnbar b{color:var(--fg);font-weight:500}
+.fillnote{margin:8px 0 0;color:var(--sec);font-size:13px;line-height:20px}
+.stalebar{background:#3a1618;border:1px solid var(--up);color:var(--fg);font-size:15px;line-height:22px;padding:14px 16px;border-radius:8px;margin:0 0 16px}
+.stalebar b{color:var(--up);font-weight:500;margin-right:6px}
+#histcard .wrap{margin:12px 0 0}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
 .chips span{font-size:13px;line-height:20px;padding:6px 10px;border-radius:8px;background:var(--raised);border:1px solid var(--line)}
 .chips b{font-weight:500;margin-right:6px}
@@ -52,12 +56,15 @@ td.wrap,th.wrap{white-space:normal;text-align:left;font-family:var(--sans);line-
 <div class="brand">大鹅基金 · 火部题材短线看板</div>
 <h1>四王盗火</h1>
 <div class="tagline">火部 · 题材短线</div>
+<p class="fillnote">纸面成交：信号在信号日收盘后计算，按下一交易日开盘价成交（T+1 open）。涨停买不进，跌停卖不出。</p>
 <div id="meta">加载中…</div></div></header>
+<div id="stale" hidden></div>
 <div class="card warnbar" id="warn"></div>
 <div class="card" id="sent"></div>
 <div class="wrap"><table class="min" id="themes"><thead><tr></tr></thead><tbody></tbody></table></div>
 <div class="wrap"><table class="min" id="pool"><thead><tr></tr></thead><tbody></tbody></table></div>
 <div class="card" id="kings"></div>
+<div class="card" id="histcard"><h2>调仓记录</h2><div class="mute" id="histnote"></div><div class="wrap"><table class="min" id="hist"><thead><tr></tr></thead><tbody></tbody></table></div></div>
 <div class="card" id="paper"></div>
 <div class="card" id="rule"></div>
 <footer><span class="first">短线是负和游戏。仅供研究，不构成推荐。实盘前请核对最新交易规则。</span><br>仓库内没有账户、密钥或真实持仓。</footer>
@@ -68,6 +75,18 @@ const mark=c=>ST[c.state]||"缺数据";
 const tip=(c)=>`${mark(c)} ${c.text||""}`;
 function chip(k,v){return `<span><b>${k}</b>${v}</span>`}
 fetch("data/latest.json",{cache:"no-store"}).then(r=>r.json()).then(d=>{
+const staleEl=document.getElementById("stale");
+const lagged=!!(d.data_date&&d.expected_date&&d.data_date<d.expected_date);
+if(d.stale||lagged){
+  staleEl.hidden=false;
+  staleEl.className="card stalebar";
+  const why=d.stale_reason||(lagged?`数据日 ${d.data_date} 落后于最近一个A股交易日 ${d.expected_date}。`:"主源与备用源都失败，沿用上一份数据。");
+  staleEl.innerHTML=`<b>数据过期</b> ${why} 下面的数字是上一份已经抓到的结果，不是新编的行情。`;
+}
+if(!d.sentiment||!d.config){
+  document.getElementById("meta").textContent=d.stale?"数据过期，没有可展示的行情":"数据不完整";
+  return;
+}
 const C=d.config,S=d.sentiment,sm={进攻:"st-atk",观望:"st-wait",退潮:"st-ebb",暂停入选:"st-stop"}[S.status]||"";
 document.getElementById("meta").textContent=`数据日期 ${d.data_date} · 更新于 ${d.updated_at}（北京时间） · 前一交易日 ${d.prev_date||"—"} · 下次观察 ${d.next_date}（遇休市顺延） · 数据源 ${d.sources.join(" / ")}`+(d.failed.length?` · 失败：${d.failed.join("；")}`:"");
 document.getElementById("warn").innerHTML=`四只来自四个题材，单只 <b>${C.weight_each}%</b>，合计不超过 <b>${C.weight_cap}%</b>。原策略写的是最多 3 只、单只 10%–15%，与「总仓位 ≤30% 且持有四只」对不上，本页改成单只 ${C.weight_each}%。情绪退潮时新开仓压到半仓以下（最多 1 只）。<b>${d.scope_note}</b>`;
@@ -78,7 +97,7 @@ const th=[["name","题材"],["n","涨停"],["height","最高板"],["day","第几
 document.querySelector("#themes thead tr").innerHTML=`<th class="l">题材</th>`+th.slice(1).map(x=>`<th class="${x[0]==="capacity"?"wrap":""}">${x[1]}</th>`).join("");
 document.querySelector("#themes tbody").innerHTML=(d.themes.length?d.themes:[{name:"（无）",n:"—",height:"—",day:{state:"missing",text:"缺数据"},catalyst:{state:"missing",text:""},echelon:{state:"missing",text:""},capacity:{state:"missing",text:""},qualified:false}]).map(t=>`<tr>
 <td class="l">${t.name}${t.denied?'<span class="tag">字面</span>':""}</td>
-<td>${t.n}</td><td>${t.height}</td>
+<td>${t.n}</td><td>${t.height??"缺数据"}</td>
 <td class="wrap">${tip(t.day)}</td><td class="wrap">${tip(t.catalyst)}</td><td class="wrap">${tip(t.echelon)}</td><td class="wrap">${tip(t.capacity)}</td>
 <td>${t.qualified?'<span class="yes">可做</span>':'<span class="no">不可做</span>'}</td></tr>`).join("")||`<tr><td class="l" colspan="8">缺数据</td></tr>`;
 document.querySelector("#pool thead tr").innerHTML=["代码","名称","题材","角色","连板","流通市值(亿)","状态","未核实 / 未过"].map((x,i)=>`<th class="${i<4||i>5?"l":""} ${i===7?"wrap":""}">${x}</th>`).join("");
@@ -88,10 +107,11 @@ document.querySelector("#pool tbody").innerHTML=(d.pool||[]).map(r=>`<tr>
 <td class="wrap">${(r.blocks||[]).join("；")||"—"}</td></tr>`).join("")||`<tr><td class="l" colspan="8">股票池为空</td></tr>`;
 const ks=d.kings||[];
 document.getElementById("kings").innerHTML=`<h2>四王</h2>`+(ks.length?`<div class="wrap"><table><thead><tr><th class="l">代码</th><th class="l">名称</th><th class="l">题材</th><th class="l">角色</th><th class="l">观察买点</th><th class="l">止损位</th><th>建议仓位</th></tr></thead><tbody>${ks.map(k=>`<tr><td class="l">${k.code}</td><td class="l">${k.name}</td><td class="l">${k.theme}</td><td class="l">${k.role}</td><td class="wrap">${k.buy||"缺数据"}</td><td class="wrap">${k.stop||"缺数据"}</td><td>${k.weight}%</td></tr>`).join("")}</tbody></table></div>`:`<p>本日四王留空，不凑数。名单变动：${(d.official.changes||[]).join("；")||"无"}。有正式四王之后，这里记调入调出。</p>`);
-document.getElementById("paper").innerHTML=`<h2>纸面组合战绩</h2><div class="chips">${chip("胜率","缺数据")}${chip("盈亏比","缺数据")}${chip("最大单笔亏损","缺数据")}${chip("已平仓","0")}</div><div class="mute">${d.paper.note}。预定规则：入选后的下一交易日按开盘价进场；遵守 T+1；涨停买不进、跌停卖不出；计滑点；止损成交价不保证正好在 -5%。单笔止损为买入价下方 ${C.stop_pct}%，或跌破买入逻辑位。单日亏损达到 2% 当天停手。连亏 3 笔空仓 3 天。冲高不板、放量滞涨先卖一半；3 个交易日没有表现离场。退潮时减到半仓以下。</div>`;
+document.getElementById("paper").innerHTML=`<h2>纸面组合战绩</h2><div class="chips">${chip("胜率","缺数据")}${chip("盈亏比","缺数据")}${chip("最大单笔亏损","缺数据")}${chip("已平仓","0")}</div><div class="mute">${d.paper.fill||"信号在信号日收盘后计算，按下一交易日开盘价成交（T+1 open）。涨停买不进，跌停卖不出。"} ${d.paper.note||""} 计滑点；止损成交价不保证正好在 -5%。单笔止损为买入价下方 ${C.stop_pct}%，或跌破买入逻辑位。单日亏损达到 2% 当天停手。连亏 3 笔空仓 3 天。冲高不板、放量滞涨先卖一半；3 个交易日没有表现离场。退潮时减到半仓以下。</div>`;
 document.getElementById("rule").innerHTML=`<h2 style="color:var(--fg)">口径（研究，不下单）</h2>
 <p><b>市场</b>：T+1。主板 10%，创业板和科创板 20%，ST 5%，北交所 30%。</p>
-<p><b>可做题材要四条一起过</b>：有催化（脚本定不了就标待人工确认，写入 config.json 的 manual_catalyst 才算通过）；梯队为当日涨停至少 ${C.echelon_min} 只且有 ${C.lbc_min} 板以上；容量为板块成交额放大且有中军；处在启动或加速的第 2 到 4 天。第 5 天以上和一日游不做。天数要靠 data/history 逐日积累，本轮没有这份档案，天数一律缺数据。</p>
+<p><b>纸面成交</b>：信号在信号日收盘后计算，下一交易日开盘价成交（T+1 open）。涨停买不进，跌停卖不出。没有成交记录，不编回测数字。</p>
+<p><b>可做题材要四条一起过</b>：有催化（脚本定不了就标待人工确认，写入 config.json 的 manual_catalyst 才算通过）；梯队为当日涨停至少 ${C.echelon_min} 只且有 ${C.lbc_min} 板以上；容量为板块成交额放大且有中军；处在启动或加速的第 2 到 4 天。第 5 天以上和一日游不做。天数要靠逐日题材档案积累，本轮还没有这份档案，天数一律缺数据。调仓记录在 data/history.json，不是题材天数。</p>
 <p><b>归类</b>：用同花顺涨停原因，按「+」分段，跳过三季报、重组、国资这类标签，取第一个词典题材。带引号或写明字辈的，归入字面博弈，不算催化。词典在 config.json。原因对不上的涨停不进题材梯队（本页未归类 ${d.untagged} 只${(d.untagged_names||[]).length?"："+(d.untagged_names||[]).join("、"):""}）。</p>
 <p><b>个股</b>：龙头、补涨、中军这个顺序。回避一字板、尾盘偷袭（首次封板 ≥14:30，东财与同花顺取更晚的一个）、纯字面蹭名、ST 和退市风险、流通市值 &lt; ${C.float_min_yi} 亿。正式池还要流通市值 ${C.float_min_yi}–${C.float_max_yi} 亿（中军放到 ${C.float_mid_max_yi} 亿）、近 20 日日均成交额 &gt; ${C.amount_avg_yi} 亿、没有减持/立案/业绩暴雷、不在交易所重点监控。后几项本轮大多是缺数据，所以表里是「未正式入池」。</p>
 <p><b>买点</b>：只有盘后数据。正式入选后给次日观察买点（涨停价或关键支撑），高开超过 ${C.no_chase_gap}% 不追。本页四王为空，不编造买点和止损价。</p>
@@ -99,5 +119,12 @@ document.getElementById("rule").innerHTML=`<h2 style="color:var(--fg)">口径（
 <p><b>重点监控</b>：${d.monitor_ok?`东财在册且区间覆盖 ${d.data_date} 的有 ${d.monitor.length} 条`:"缺数据"}。已过期、从名单摘掉的历史监管，这份静态文件里可能没有。</p>
 <p><b>已知缺口</b>：${d.failed.join("；")||"本次抓取没有失败项"}。开盘啦题材强度接口有响应但名单为空，本轮不用它。</p>`;
 }).catch(e=>{document.getElementById("meta").textContent="数据加载失败："+e});
+function histLeg(xs){return (!xs||!xs.length)?"无":xs.map(x=>`${x.name?x.name+" ":""}${x.code}${x.weight==null?"":" "+x.weight+"%"}`).join("、")}
+fetch("data/history.json",{cache:"no-store"}).then(r=>r.json()).then(h=>{
+  const ev=h.events||[];
+  document.querySelector("#hist thead tr").innerHTML=["日期","调入","调出","调仓后权重","原因"].map(x=>`<th class="l wrap">${x}</th>`).join("");
+  document.querySelector("#hist tbody").innerHTML=ev.length?ev.map(e=>`<tr><td class="l">${e.date}</td><td class="wrap">${histLeg(e.in)}</td><td class="wrap">${histLeg(e.out)}</td><td class="wrap">${histLeg(e.weights)}</td><td class="wrap">${(e.changes||[]).join("；")||e.reason||"—"}</td></tr>`).join(""):`<tr><td class="l" colspan="5">尚无调仓记录</td></tr>`;
+  document.getElementById("histnote").textContent=h.note||"调入、调出、权重为「无」表示该日四王留空，不是漏记。";
+}).catch(e=>{document.getElementById("histnote").textContent="调仓记录加载失败："+e});
 if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js");
 </script></body></html>
