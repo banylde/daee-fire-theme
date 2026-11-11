@@ -1,0 +1,86 @@
+{
+ "status": "ok",
+ "currency": "CNY",
+ "initial_cash": 1000000.0,
+ "cash": 1000000.0,
+ "equity": 1000000.0,
+ "positions": [],
+ "pending": [],
+ "trades": [],
+ "nav": [
+  {
+   "date": "2026-11-06",
+   "equity": 1000000.0,
+   "nav": 1.0,
+   "cash": 1000000.0,
+   "hs300": 4054.28,
+   "cyb": 2465.23,
+   "hs300_nav": 1.0,
+   "cyb_nav": 1.0,
+   "price_gap": false
+  },
+  {
+   "date": "2026-11-09",
+   "equity": 1000000.0,
+   "nav": 1.0,
+   "cash": 1000000.0,
+   "hs300": 4056.11,
+   "cyb": 2458.56,
+   "hs300_nav": 1.000451,
+   "cyb_nav": 0.997294,
+   "price_gap": false
+  },
+  {
+   "date": "2026-11-10",
+   "equity": 1000000.0,
+   "nav": 1.0,
+   "cash": 1000000.0,
+   "hs300": 4059.11,
+   "cyb": 2494.4,
+   "hs300_nav": 1.001191,
+   "cyb_nav": 1.011833,
+   "price_gap": false
+  },
+  {
+   "date": "2026-11-11",
+   "equity": 1000000.0,
+   "nav": 1.0,
+   "cash": 1000000.0,
+   "hs300": 4075.71,
+   "cyb": 2572.07,
+   "hs300_nav": 1.005286,
+   "cyb_nav": 1.043339,
+   "price_gap": false
+  }
+ ],
+ "metrics": {
+  "cum_return": 0.0,
+  "max_drawdown": 0.0,
+  "win_rate": null,
+  "payoff": null,
+  "max_loss": null,
+  "closed": 0,
+  "hs300_return": 0.005286,
+  "cyb_return": 0.043339
+ },
+ "benchmarks": {
+  "hs300": "000300",
+  "cyb": "399006"
+ },
+ "rules": {
+  "signal": "收盘计算信号",
+  "fill": "次日开盘价",
+  "commission": 0.0003,
+  "slippage": 0.001,
+  "stamp_sell": 0.0005,
+  "lot": "100，科创板200",
+  "initial_cash": 1000000.0
+ },
+ "gaps": [],
+ "note": "虚拟资金。只按正式四王调仓记录建仓，策略标签不触发买卖。没有平仓时胜率、盈亏比、最大单笔亏损保持空值，不编造。",
+ "asof": "2026-11-11",
+ "updated_at": "2026-11-11 23:27",
+ "sources": [
+  "tencent-kline"
+ ]
+}

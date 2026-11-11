@@ -50,30 +50,142 @@ table.min{min-width:720px}
 td.wrap,th.wrap{white-space:normal;text-align:left;font-family:var(--sans);line-height:20px;height:auto}
 #rule{font-size:13px;line-height:22px;color:var(--sec)}#rule b{font-weight:500;color:var(--fg)}
 #rule p{margin:8px 0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:800px){.grid2{grid-template-columns:1fr}}
+.chart{width:100%;height:auto;display:block}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin:8px 0 0;font-size:12px;color:var(--sec)}
+.legend i{display:inline-block;width:16px;height:3px;margin-right:6px;vertical-align:middle;border-radius:2px}
+.chipbtn{font:inherit;color:var(--sec);background:var(--raised);border:1px solid var(--line);border-radius:8px;padding:6px 10px;cursor:pointer}
+.chipbtn.on{color:var(--fg);border-color:var(--acc)}
+#screener{margin:0 0 12px}
+#paper .wrap,#extra .wrap{margin:12px 0 0}
+details.navday{margin-top:12px}details.navday summary{cursor:pointer;color:var(--sec)}
 </style></head><body>
 <div class="page">
 <header class="mast"><div class="seal" aria-hidden="true">火</div><div>
 <div class="brand">大鹅基金 · 火部题材短线看板</div>
 <h1>四王盗火</h1>
 <div class="tagline">火部 · 题材短线</div>
-<p class="fillnote">纸面成交：信号在信号日收盘后计算，按下一交易日开盘价成交（T+1 open）。涨停买不进，跌停卖不出。</p>
+<p class="fillnote">模拟盘：信号在信号日收盘后计算，按下一交易日开盘价成交（T+1 open）。涨停买不进，跌停卖不出。虚拟资金 100 万，不下单。</p>
 <div id="meta">加载中…</div></div></header>
 <div id="stale" hidden></div>
 <div class="card warnbar" id="warn"></div>
 <div class="card" id="sent"></div>
 <div class="wrap"><table class="min" id="themes"><thead><tr></tr></thead><tbody></tbody></table></div>
+<div id="screener"></div>
 <div class="wrap"><table class="min" id="pool"><thead><tr></tr></thead><tbody></tbody></table></div>
+<div id="extra"></div>
 <div class="card" id="kings"></div>
 <div class="card" id="histcard"><h2>调仓记录</h2><div class="mute" id="histnote"></div><div class="wrap"><table class="min" id="hist"><thead><tr></tr></thead><tbody></tbody></table></div></div>
 <div class="card" id="paper"></div>
 <div class="card" id="rule"></div>
-<footer><span class="first">短线是负和游戏。仅供研究，不构成推荐。实盘前请核对最新交易规则。</span><br>仓库内没有账户、密钥或真实持仓。</footer>
+<footer><span class="first">短线是负和游戏。仅供研究，不构成推荐。实盘前请核对最新交易规则。</span><br>模拟盘是虚拟资金，不连接券商。仓库内没有账户、密钥或真实持仓。</footer>
 </div>
 <script>
 const ST={pass:'<span class="yes">通过</span>',fail:'<span class="no">未过</span>',manual:'<span class="st-wait">待人工确认</span>',missing:'<span class="no">缺数据</span>'};
 const mark=c=>ST[c.state]||"缺数据";
 const tip=(c)=>`${mark(c)} ${c.text||""}`;
 function chip(k,v){return `<span><b>${k}</b>${v}</span>`}
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const yuan=n=>n==null||n===""?"数据缺失":Number(n).toLocaleString("zh-CN",{minimumFractionDigits:2,maximumFractionDigits:2});
+const yi=n=>{if(n==null||n==="")return "数据缺失";const v=Number(n)/1e8;return (v>0?"+":"")+v.toFixed(2)+"亿"};
+const ratioPct=x=>{if(x==null||x==="")return "数据缺失";const n=Number(x)*100;return (n>0?"+":"")+n.toFixed(2)+"%"};
+function flowCell(t){
+  const f=t.concept_flow;
+  if(!f) return "—";
+  if(f.status==="数据缺失") return '<span class="no">数据缺失</span>';
+  if(f.status!=="ok") return `<span class="no">${esc(f.text||f.status||"未匹配")}</span>`;
+  const n=Number(f.main_net),cls=n>0?"p":n<0?"n":"";
+  return `<span class="${cls}">${esc(f.text||"")}</span>`;
+}
+let POOL=[],TAG="全部",RULES=[];
+function tagText(r){
+  if(r.strategy_status==="数据缺失") return '<span class="no">数据缺失</span>';
+  if(!(r.strategy_tags||[]).length) return '<span class="no">无</span>';
+  return `<span class="st-wait">${esc(r.strategy_tags.join("、"))}</span>`;
+}
+function drawPool(){
+  const names=["全部"].concat(RULES.map(r=>r.name));
+  document.getElementById("screener").innerHTML=`<div class="chips" role="group" aria-label="策略标签初筛">${names.map(name=>{
+    const n=name==="全部"?POOL.length:POOL.filter(r=>(r.strategy_tags||[]).includes(name)).length;
+    return `<button type="button" class="chipbtn${TAG===name?" on":""}" data-tag="${esc(name)}">${esc(name)} ${n}</button>`;
+  }).join("")}</div><p class="mute">策略标签只筛这张表的展示，不改变股票池和四王。接口失败的标「数据缺失」，股票仍留在表里。</p>`;
+  const rows=TAG==="全部"?POOL:POOL.filter(r=>(r.strategy_tags||[]).includes(TAG));
+  document.querySelector("#pool tbody").innerHTML=rows.map(r=>`<tr>
+<td class="l">${esc(r.code)}</td><td class="l">${esc(r.name)}</td><td class="l">${esc(r.theme)}</td><td class="l">${esc(r.role)}</td>
+<td>${r.lbc}</td><td>${r.float_yi==null?"缺数据":r.float_yi}</td><td class="l">${esc(r.status)}</td>
+<td class="wrap">${esc(r.limitup_reason||"—")}</td>
+<td class="wrap">${tagText(r)}</td>
+<td class="wrap">${esc(r.lhb_text||"—")}</td>
+<td class="wrap">早 ${esc(r.chip_open_text||"—")}<br>尾 ${esc(r.chip_end_text||"—")}</td>
+<td class="wrap">${esc((r.blocks||[]).join("；")||"—")}</td></tr>`).join("")||`<tr><td class="l" colspan="12">${TAG==="全部"?"股票池为空":"没有股票命中该标签"}</td></tr>`;
+}
+function miniTable(headers, rows){
+  if(!rows.length) return `<p class="mute">当日无记录</p>`;
+  return `<div class="wrap"><table class="min"><thead><tr>${headers.map(h=>`<th class="l wrap">${h}</th>`).join("")}</tr></thead><tbody>${rows.join("")}</tbody></table></div>`;
+}
+function renderExtra(d){
+  const lhb=d.lhb||{status:"数据缺失",rows:[]};
+  const open=d.chip_open||{status:"数据缺失",rows:[]};
+  const end=d.chip_end||{status:"数据缺失",rows:[]};
+  const flow=d.concept_flow||{status:"数据缺失",top:[]};
+  const lhbRows=(lhb.rows||[]).slice(0,20).map(r=>`<tr><td class="l">${esc(r.code)}</td><td class="l">${esc(r.name)}</td><td class="${(r.net||0)>0?"p":"n"}">${yi(r.net)}</td><td class="wrap">${esc(r.reason||"")}</td></tr>`);
+  const chipRows=(rows)=>rows.slice(0,12).map(r=>`<tr><td class="l">${esc(r.code)}</td><td class="l">${esc(r.name)}</td><td>${r.bid_rate==null?"—":(r.bid_rate>0?"+":"")+Number(r.bid_rate).toFixed(2)+"%" }</td><td>${r.bid_ratio==null?"—":Number(r.bid_ratio).toFixed(1)+"%"}</td><td>${yi(r.bid_trust)}</td></tr>`);
+  const top=(flow.top||[]).map(r=>`<tr><td class="l">${esc(r.name)}</td><td class="${(r.pct||0)>=0?"p":"n"}">${r.pct==null?"—":(r.pct>0?"+":"")+Number(r.pct).toFixed(2)+"%"}</td><td class="${(r.main_net||0)>=0?"p":"n"}">${yi(r.main_net)}</td><td class="l">${esc(r.top_name||"")}</td></tr>`);
+  const block=(title,status,body)=>`<div class="card"><h2>${title}${status==="数据缺失"?' <span class="tag">数据缺失</span>':""}</h2>${status==="数据缺失"?"<p>数据缺失。构建没有中断，股票池没有因此删行。</p>":body}</div>`;
+  document.getElementById("extra").innerHTML=
+    block("龙虎榜",lhb.status,`<p class="mute">${esc(lhb.date||d.data_date||"")} · ${lhb.count??0} 只。同一只多条原因已合并，净买额取绝对值较大的一条。表内最多 20 条。</p>`+miniTable(["代码","名称","净买额","上榜原因"],lhbRows))+
+    `<div class="grid2">`+
+    block("早盘抢筹",open.status,`<p class="mute">通达信竞价公开接口，按抢筹委托金额前 100 名。未上榜不等于数据缺失。</p>`+miniTable(["代码","名称","抢筹幅度","抢筹占比","委托金额"],chipRows(open.rows||[])))+
+    block("尾盘抢筹",end.status,`<p class="mute">${esc(end.date||d.data_date||"")} · ${end.count??0} 名。</p>`+miniTable(["代码","名称","抢筹幅度","抢筹占比","委托金额"],chipRows(end.rows||[])))+
+    `</div>`+
+    block("概念资金流向",flow.status,`<p class="mute">东财概念板块今日主力净流入，按净额排序的前 8 名。词典题材的匹配结果在上面的题材表，不参与「正式可做」。</p>`+miniTable(["概念","涨跌幅","主力净流入","净流入最大股"],top));
+}
+function navSvg(nav){
+  const w=680,h=220,padL=48,padR=12,padT=16,padB=28;
+  const keys=[["nav","模拟盘","#f0a36a"],["hs300_nav","沪深300","#a1a1a6"],["cyb_nav","创业板指","#8eb6ff"]];
+  const vals=[];
+  nav.forEach(p=>keys.forEach(k=>{if(p[k[0]]!=null)vals.push(+p[k[0]])}));
+  if(!vals.length) return "<p>净值数据缺失</p>";
+  let min=Math.min.apply(null,vals),max=Math.max.apply(null,vals);
+  if(max-min<1e-6){min-=0.005;max+=0.005}
+  const n=nav.length;
+  const X=i=>padL+(n<=1?(w-padL-padR)/2:i*(w-padL-padR)/(n-1));
+  const Y=v=>padT+(max-v)/(max-min)*(h-padT-padB);
+  const lines=keys.map(([k,label,color])=>{
+    const pts=nav.map((p,i)=>p[k]==null?null:X(i).toFixed(1)+","+Y(+p[k]).toFixed(1)).filter(Boolean);
+    return pts.length?`<polyline fill="none" stroke="${color}" stroke-width="2" points="${pts.join(" ")}"/>`:"";
+  }).join("");
+  const y0=Y(1),base=y0>=padT&&y0<=h-padB?`<line x1="${padL}" y1="${y0.toFixed(1)}" x2="${w-padR}" y2="${y0.toFixed(1)}" stroke="rgba(237,237,237,.18)"/>`:"";
+  const legend=keys.map(([,label,color])=>`<span><i style="background:${color}"></i>${label}</span>`).join("");
+  return `<svg class="chart" viewBox="0 0 ${w} ${h}" role="img" aria-label="模拟盘净值与沪深300、创业板指">${base}${lines}</svg><div class="legend">${legend}</div>`;
+}
+function renderPaper(p){
+  const el=document.getElementById("paper");
+  if(!p||p.status==="数据缺失"&&!(p.nav||[]).length){
+    el.innerHTML=`<h2>模拟盘</h2><p>数据缺失。${esc((p&&p.note)||"没有编造净值。")}</p>`;
+    return;
+  }
+  const m=p.metrics||{},nav=p.nav||[];
+  const pos=p.positions||[],trades=(p.trades||[]).slice(-12).reverse(),pending=p.pending||[];
+  el.innerHTML=`<h2>模拟盘</h2>
+<div class="chips">${chip("初始资金",yuan(p.initial_cash))}${chip("净值",p.equity==null?"数据缺失":yuan(p.equity))}${chip("累计收益",ratioPct(m.cum_return))}${chip("最大回撤",m.max_drawdown==null?"数据缺失":ratioPct(m.max_drawdown))}${chip("沪深300",ratioPct(m.hs300_return))}${chip("创业板指",ratioPct(m.cyb_return))}${chip("胜率",m.win_rate==null?"数据缺失":ratioPct(m.win_rate))}${chip("盈亏比",m.payoff==null?"数据缺失":Number(m.payoff).toFixed(2))}${chip("最大单笔亏损",m.max_loss==null?"数据缺失":yuan(m.max_loss))}${chip("已平仓",m.closed??0)}</div>
+${navSvg(nav)}
+<p class="mute">${esc(p.note||"")} 佣金万 3 双边，滑点 0.1%，卖出印花税 0.05%。收盘计算信号，次日开盘价成交（T+1 open）。涨停买不进，跌停卖不出，不能成交就顺延。这是虚拟记账，不是下单。</p>
+<h2>当前持仓</h2>
+${pos.length?`<div class="wrap"><table><thead><tr><th class="l">代码</th><th class="l">名称</th><th>股数</th><th>收盘价</th><th>市值</th><th>目标权重</th></tr></thead><tbody>${pos.map(r=>`<tr><td class="l">${esc(r.code)}</td><td class="l">${esc(r.name)}</td><td>${r.shares}</td><td>${r.close==null?"数据缺失":r.close}</td><td>${yuan(r.market_value)}</td><td>${r.target_weight||0}%</td></tr>`).join("")}</tbody></table></div>`:`<p>空仓。正式四王留空时资金停在现金，不编造持仓。现金 ${yuan(p.cash)}。</p>`}
+<h2>待成交</h2>
+${pending.length?`<div class="wrap"><table><thead><tr><th class="l">代码</th><th class="l">方向</th><th>目标权重</th><th class="l">说明</th></tr></thead><tbody>${pending.map(r=>`<tr><td class="l">${esc(r.code)} ${esc(r.name||"")}</td><td class="l">${esc(r.side)}</td><td>${r.target_weight||0}%</td><td class="wrap">${esc(r.note||"")}</td></tr>`).join("")}</tbody></table></div>`:"<p class='mute'>没有待到下一交易日开盘的单。</p>"}
+<h2>最近交易</h2>
+${trades.length?`<div class="wrap"><table class="min"><thead><tr><th class="l">日期</th><th class="l">代码</th><th class="l">方向</th><th>股数</th><th>开盘</th><th>成交价</th><th>金额</th><th>佣金</th><th>印花税</th><th class="l">说明</th></tr></thead><tbody>${trades.map(t=>`<tr><td class="l">${esc(t.date)}</td><td class="l">${esc(t.name||"")} ${esc(t.code)}</td><td class="l">${t.side==="buy"?"买":"卖"}</td><td>${t.shares}</td><td>${t.open}</td><td>${t.price}</td><td>${yuan(t.notional)}</td><td>${yuan(t.commission)}</td><td>${yuan(t.stamp)}</td><td class="wrap">${esc(t.note||"")}</td></tr>`).join("")}</tbody></table></div>`:"<p class='mute'>尚无成交。信号日收盘后才记账，成交在下一交易日开盘。</p>"}
+<details class="navday"><summary>每日净值</summary><div class="wrap"><table><thead><tr><th class="l">日期</th><th>权益</th><th>净值</th><th>现金</th><th>沪深300</th><th>创业板指</th></tr></thead><tbody>${nav.map(r=>`<tr><td class="l">${esc(r.date)}</td><td>${yuan(r.equity)}</td><td>${r.nav==null?"—":Number(r.nav).toFixed(4)}</td><td>${yuan(r.cash)}</td><td>${r.hs300_nav==null?"数据缺失":Number(r.hs300_nav).toFixed(4)}</td><td>${r.cyb_nav==null?"数据缺失":Number(r.cyb_nav).toFixed(4)}</td></tr>`).join("")}</tbody></table></div></details>`;
+}
+document.getElementById("screener").addEventListener("click",e=>{
+  const b=e.target.closest("button[data-tag]");
+  if(!b) return;
+  TAG=b.getAttribute("data-tag");
+  drawPool();
+});
 fetch("data/latest.json",{cache:"no-store"}).then(r=>r.json()).then(d=>{
 const staleEl=document.getElementById("stale");
 const lagged=!!(d.data_date&&d.expected_date&&d.data_date<d.expected_date);
@@ -93,24 +205,24 @@ document.getElementById("warn").innerHTML=`四只来自四个题材，单只 <b>
 document.getElementById("sent").innerHTML=`<h2>情绪面板 · <span class="${sm}">${S.status}</span></h2>
 <div class="chips">${chip("涨停",S.zt??"缺数据")}${chip("跌停",S.dt??"缺数据")}${chip("炸板",S.zb??"缺数据")}${chip("炸板率",S.zb_rate==null?"缺数据":S.zb_rate+"%")}${chip("连板高度",S.height??"缺数据")}${chip("昨日涨停今日收益",S.yzt_avg==null?"缺数据":(S.yzt_avg>0?"+":"")+S.yzt_avg+"%")}${chip("昨日跌停",S.dt_prev??"缺数据")}${chip("昨日高度",S.height_prev??"缺数据")}${chip("高度标断板",S.height_broken==null?"缺数据":S.height_broken?"是":"否")}</div>
 <div class="mute">${S.why}</div>`;
-const th=[["name","题材"],["n","涨停"],["height","最高板"],["day","第几天"],["catalyst","催化"],["echelon","梯队"],["capacity","容量"],["qualified","正式可做"]];
-document.querySelector("#themes thead tr").innerHTML=`<th class="l">题材</th>`+th.slice(1).map(x=>`<th class="${x[0]==="capacity"?"wrap":""}">${x[1]}</th>`).join("");
+const th=[["name","题材"],["n","涨停"],["height","最高板"],["day","第几天"],["catalyst","催化"],["echelon","梯队"],["capacity","容量"],["flow","概念资金"],["qualified","正式可做"]];
+document.querySelector("#themes thead tr").innerHTML=`<th class="l">题材</th>`+th.slice(1).map(x=>`<th class="${x[0]==="capacity"||x[0]==="flow"?"wrap":""}">${x[1]}</th>`).join("");
 document.querySelector("#themes tbody").innerHTML=(d.themes.length?d.themes:[{name:"（无）",n:"—",height:"—",day:{state:"missing",text:"缺数据"},catalyst:{state:"missing",text:""},echelon:{state:"missing",text:""},capacity:{state:"missing",text:""},qualified:false}]).map(t=>`<tr>
-<td class="l">${t.name}${t.denied?'<span class="tag">字面</span>':""}</td>
+<td class="l">${esc(t.name)}${t.denied?'<span class="tag">字面</span>':""}</td>
 <td>${t.n}</td><td>${t.height??"缺数据"}</td>
 <td class="wrap">${tip(t.day)}</td><td class="wrap">${tip(t.catalyst)}</td><td class="wrap">${tip(t.echelon)}</td><td class="wrap">${tip(t.capacity)}</td>
-<td>${t.qualified?'<span class="yes">可做</span>':'<span class="no">不可做</span>'}</td></tr>`).join("")||`<tr><td class="l" colspan="8">缺数据</td></tr>`;
-document.querySelector("#pool thead tr").innerHTML=["代码","名称","题材","角色","连板","流通市值(亿)","状态","未核实 / 未过"].map((x,i)=>`<th class="${i<4||i>5?"l":""} ${i===7?"wrap":""}">${x}</th>`).join("");
-document.querySelector("#pool tbody").innerHTML=(d.pool||[]).map(r=>`<tr>
-<td class="l">${r.code}</td><td class="l">${r.name}</td><td class="l">${r.theme}</td><td class="l">${r.role}</td>
-<td>${r.lbc}</td><td>${r.float_yi==null?"缺数据":r.float_yi}</td><td class="l">${r.status}</td>
-<td class="wrap">${(r.blocks||[]).join("；")||"—"}</td></tr>`).join("")||`<tr><td class="l" colspan="8">股票池为空</td></tr>`;
+<td class="wrap">${flowCell(t)}</td>
+<td>${t.qualified?'<span class="yes">可做</span>':'<span class="no">不可做</span>'}</td></tr>`).join("")||`<tr><td class="l" colspan="9">缺数据</td></tr>`;
+document.querySelector("#pool thead tr").innerHTML=["代码","名称","题材","角色","连板","流通市值(亿)","状态","涨停原因","策略标签","龙虎榜","抢筹","未核实 / 未过"].map((x,i)=>`<th class="${i<4||i>5?"l":""} ${i>=7?"wrap":""}">${x}</th>`).join("");
+POOL=d.pool||[];RULES=d.strategy_rules||[{name:"放量上涨"},{name:"停机坪"},{name:"回踩年线"},{name:"突破平台"},{name:"无大幅回撤"},{name:"均线多头"}];TAG="全部";
+drawPool();
+renderExtra(d);
 const ks=d.kings||[];
 document.getElementById("kings").innerHTML=`<h2>四王</h2>`+(ks.length?`<div class="wrap"><table><thead><tr><th class="l">代码</th><th class="l">名称</th><th class="l">题材</th><th class="l">角色</th><th class="l">观察买点</th><th class="l">止损位</th><th>建议仓位</th></tr></thead><tbody>${ks.map(k=>`<tr><td class="l">${k.code}</td><td class="l">${k.name}</td><td class="l">${k.theme}</td><td class="l">${k.role}</td><td class="wrap">${k.buy||"缺数据"}</td><td class="wrap">${k.stop||"缺数据"}</td><td>${k.weight}%</td></tr>`).join("")}</tbody></table></div>`:`<p>本日四王留空，不凑数。名单变动：${(d.official.changes||[]).join("；")||"无"}。有正式四王之后，这里记调入调出。</p>`);
-document.getElementById("paper").innerHTML=`<h2>纸面组合战绩</h2><div class="chips">${chip("胜率","缺数据")}${chip("盈亏比","缺数据")}${chip("最大单笔亏损","缺数据")}${chip("已平仓","0")}</div><div class="mute">${d.paper.fill||"信号在信号日收盘后计算，按下一交易日开盘价成交（T+1 open）。涨停买不进，跌停卖不出。"} ${d.paper.note||""} 计滑点；止损成交价不保证正好在 -5%。单笔止损为买入价下方 ${C.stop_pct}%，或跌破买入逻辑位。单日亏损达到 2% 当天停手。连亏 3 笔空仓 3 天。冲高不板、放量滞涨先卖一半；3 个交易日没有表现离场。退潮时减到半仓以下。</div>`;
 document.getElementById("rule").innerHTML=`<h2 style="color:var(--fg)">口径（研究，不下单）</h2>
 <p><b>市场</b>：T+1。主板 10%，创业板和科创板 20%，ST 5%，北交所 30%。</p>
-<p><b>纸面成交</b>：信号在信号日收盘后计算，下一交易日开盘价成交（T+1 open）。涨停买不进，跌停卖不出。没有成交记录，不编回测数字。</p>
+<p><b>模拟盘</b>：信号在信号日收盘后计算，下一交易日开盘价成交（T+1 open）。涨停买不进，跌停卖不出，不能成交就顺延。初始虚拟资金 100 万，只按正式四王的名单和权重调仓。佣金万 3 双边，滑点 0.1%，卖出印花税 0.05%。没有平仓时，胜率、盈亏比、最大单笔亏损保持数据缺失，不编造。单笔止损的研究口径仍是买入价下方 ${C.stop_pct}%，模拟盘本身不代为触发止损。</p>
+<p><b>策略标签</b>：放量上涨、停机坪、回踩年线、突破平台、无大幅回撤、均线多头，只作为候选池的辅助标签和可选初筛。正式四王的规则和阈值没有改。</p>
 <p><b>可做题材要四条一起过</b>：有催化（脚本定不了就标待人工确认，写入 config.json 的 manual_catalyst 才算通过）；梯队为当日涨停至少 ${C.echelon_min} 只且有 ${C.lbc_min} 板以上；容量为板块成交额放大且有中军；处在启动或加速的第 2 到 4 天。第 5 天以上和一日游不做。天数要靠逐日题材档案积累，本轮还没有这份档案，天数一律缺数据。调仓记录在 data/history.json，不是题材天数。</p>
 <p><b>归类</b>：用同花顺涨停原因，按「+」分段，跳过三季报、重组、国资这类标签，取第一个词典题材。带引号或写明字辈的，归入字面博弈，不算催化。词典在 config.json。原因对不上的涨停不进题材梯队（本页未归类 ${d.untagged} 只${(d.untagged_names||[]).length?"："+(d.untagged_names||[]).join("、"):""}）。</p>
 <p><b>个股</b>：龙头、补涨、中军这个顺序。回避一字板、尾盘偷袭（首次封板 ≥14:30，东财与同花顺取更晚的一个）、纯字面蹭名、ST 和退市风险、流通市值 &lt; ${C.float_min_yi} 亿。正式池还要流通市值 ${C.float_min_yi}–${C.float_max_yi} 亿（中军放到 ${C.float_mid_max_yi} 亿）、近 20 日日均成交额 &gt; ${C.amount_avg_yi} 亿、没有减持/立案/业绩暴雷、不在交易所重点监控。后几项本轮大多是缺数据，所以表里是「未正式入池」。</p>
@@ -126,5 +238,6 @@ fetch("data/history.json",{cache:"no-store"}).then(r=>r.json()).then(h=>{
   document.querySelector("#hist tbody").innerHTML=ev.length?ev.map(e=>`<tr><td class="l">${e.date}</td><td class="wrap">${histLeg(e.in)}</td><td class="wrap">${histLeg(e.out)}</td><td class="wrap">${histLeg(e.weights)}</td><td class="wrap">${(e.changes||[]).join("；")||e.reason||"—"}</td></tr>`).join(""):`<tr><td class="l" colspan="5">尚无调仓记录</td></tr>`;
   document.getElementById("histnote").textContent=h.note||"调入、调出、权重为「无」表示该日四王留空，不是漏记。";
 }).catch(e=>{document.getElementById("histnote").textContent="调仓记录加载失败："+e});
+fetch("data/paper.json",{cache:"no-store"}).then(r=>{if(!r.ok)throw new Error(String(r.status));return r.json()}).then(renderPaper).catch(()=>renderPaper({status:"数据缺失",note:"data/paper.json 没有加载到，不编造净值。",nav:[]}));
 if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js");
 </script></body></html>

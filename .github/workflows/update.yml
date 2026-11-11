@@ -1,7 +1,9 @@
 name: 更新题材数据
 on:
   schedule:
-    - cron: "40 7 * * 1-5"   # UTC 07:40 = 北京时间 15:40，周一至周五
+    # 收盘后两轮。15:40 先出涨停和模拟盘；18:30 再补龙虎榜、尾盘抢筹。同一脚本，重复跑只覆盖当天。
+    - cron: "40 7 * * 1-5"    # UTC 07:40 = 北京时间 15:40，周一至周五
+    - cron: "30 10 * * 1-5"   # UTC 10:30 = 北京时间 18:30，周一至周五
   workflow_dispatch:
 permissions:
   contents: write
@@ -11,7 +13,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -23,5 +25,5 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/latest.json data/official.json data/history.json
+          git add data/latest.json data/official.json data/history.json data/paper.json
           if git diff --cached --quiet; then echo "无变化"; else git commit -m "data: $(TZ=Asia/Shanghai date '+%F %H:%M') 更新" && git push; fi

@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
-"""四王盗火：抓取最近一个交易日的涨停结构，写 data/latest.json 与 data/official.json。
+"""四王盗火：抓取最近一个交易日的涨停结构，写 data/latest.json、data/official.json 和 data/paper.json。
 
-本轮不做题材天数回填，也不做纸面统计。缺数据保持缺数据，四王不凑数。
-每次正式调仓追加 data/history.json。主源失败时改用已有备用源；仍失败则把上一份数据标成过期，不编造行情。
+正式四王的门槛、只数和权重不在这里改。策略标签、龙虎榜、抢筹、概念资金和模拟盘都是附加结果。
+缺数据保持缺数据。每次正式调仓追加 data/history.json。主源失败时改用已有备用源；仍失败则把上一份行情标成过期，不编造报价，也不删除股票。
 """
 import os, re, sys, json, datetime as dt
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import common
+import enrich
+import strategy_tags
+import paper
 
 UT = "7eea3edcaed734bea9cbfc24409ed989"
 EM = "https://push2ex.eastmoney.com/%s?ut=%s&dpt=wz.ztzt&Pageindex=%d&pagesize=%d&sort=%s&date=%s"
@@ -473,7 +476,30 @@ def write_stale_latest(reason, expected=None):
         extra = "数据日 %s 落后于最近一个A股交易日 %s。" % (doc["data_date"], expected)
         if extra not in reason:
             reason = reason + extra
-    common.save("data/latest.json", apply_stale(doc, reason, expected))
+    doc = apply_stale(doc, reason, expected)
+    try:
+        asof = doc.get("data_date") or expected or doc.get("expected_date")
+        cfg = common.load("config.json")
+        failed = list(doc.get("failed") or [])
+        sources = list(doc.get("sources") or [])
+        try:
+            dates, note = load_trading_dates("20500101")
+            if note and note not in failed:
+                failed.append(note)
+        except Exception as e:
+            dates = []
+            failed.append("附加数据交易日历：" + str(e))
+        if asof and asof not in dates:
+            dates.append(asof)
+            dates.sort()
+        extra = "策略标签和模拟盘是附加信息，不改变已经留下的四王数字。"
+        note = doc.get("scope_note") or ""
+        if extra not in note:
+            doc["scope_note"] = (note + " " + extra).strip()
+        finish_outputs(doc, stocks_from_doc(doc), cfg, asof, dates, failed, sources, None, None, False)
+    except Exception as e:
+        print("附加数据失败，行情过期标记仍写回：", e, file=sys.stderr)
+        common.save("data/latest.json", doc)
 
 def index_items(items):
     out = {}
@@ -540,6 +566,60 @@ def save_history_event(event):
     hist.setdefault("note", HISTORY_NOTE)
     hist["events"] = upsert_events(hist.get("events") or [], event)
     common.save("data/history.json", hist)
+
+
+def stocks_from_doc(doc):
+    stocks, seen = [], set()
+    for theme in doc.get("themes") or []:
+        for member in theme.get("members") or []:
+            code = member.get("code")
+            if code and code not in seen:
+                seen.add(code)
+                stocks.append(member)
+    return stocks
+
+
+def finish_outputs(out, stocks, cfg, asof, dates, failed, sources, official, old, write_official):
+    """附加数据、策略标签和模拟盘。失败只打标，不改四王，不删除池内股票。"""
+    pool_before = [row.get("code") for row in (out.get("pool") or [])]
+    try:
+        out.update(enrich.gather(out.get("pool") or [], out.get("themes") or [], stocks or [], cfg, asof, failed, sources))
+    except Exception as e:
+        failed.append("数据增强：" + str(e))
+        out.setdefault("limitup_reason", {"status": "数据缺失", "date": asof, "count": 0, "detail_missing": 0})
+        for key in ("lhb", "chip_open", "chip_end"):
+            out.setdefault(key, {"status": "数据缺失", "date": asof, "rows": [], "count": 0, "error": str(e)})
+        out.setdefault("concept_flow", {"status": "数据缺失", "date": asof, "matched": [], "top": [], "count": 0, "error": str(e)})
+    try:
+        strategy_tags.apply(out.get("pool") or [], asof, failed, sources)
+    except Exception as e:
+        failed.append("策略标签：" + str(e))
+        for row in out.get("pool") or []:
+            row["strategy_tags"] = []
+            row["strategy_status"] = "数据缺失"
+    if [row.get("code") for row in (out.get("pool") or [])] != pool_before:
+        raise RuntimeError("附加数据改变了股票池")
+    out["strategy_rules"] = strategy_tags.RULES
+    out["failed"] = failed
+    out["sources"] = sources
+    if write_official and official is not None:
+        common.save("data/official.json", official)
+        save_history_event(make_rebalance_event(official, old, cfg["weight_each"]))
+    try:
+        hist_path = os.path.join(common.ROOT, "data", "history.json")
+        if os.path.exists(hist_path):
+            with open(hist_path, encoding="utf-8") as f:
+                hist = json.load(f)
+        else:
+            hist = {"events": []}
+        paper_doc = paper.build(hist, dates or [], asof)
+    except Exception as e:
+        failed.append("模拟盘：" + str(e))
+        out["failed"] = failed
+        paper_doc = paper.failed_doc(asof, str(e))
+    common.save("data/paper.json", paper_doc)
+    out["paper"] = paper.summary(paper_doc)
+    common.save("data/latest.json", out)
 
 def run():
     cfg = common.load("config.json")
@@ -708,8 +788,7 @@ def run():
         "official": official,
         "monitor": mon or [],
         "monitor_ok": mon is not None,
-        "paper": {"status": "缺数据", "fill": PAPER_FILL,
-                  "note": "胜率、盈亏比、最大单笔亏损没有成交记录，保持缺数据，不编造。"},
+        "paper": {"status": "数据缺失", "fill": PAPER_FILL, "note": ""},
         "config": {
             "kings": cfg["kings"], "weight_each": cfg["weight_each"], "weight_cap": cfg["weight_cap"],
             "stop_pct": cfg["stop_pct"], "no_chase_gap": cfg["no_chase_gap"],
@@ -717,12 +796,10 @@ def run():
             "float_min_yi": cfg["float_min_yi"], "float_max_yi": cfg["float_max_yi"],
             "float_mid_max_yi": cfg["float_mid_max_yi"], "amount_avg_yi": cfg["amount_avg_yi"],
         },
-        "scope_note": "本轮只核当日涨停结构、情绪和板块成交额放大的比例。题材第几天、中军趋势、20日成交额、公告排雷、纸面成交都还是缺数据。",
+        "scope_note": "正式四王仍只看催化、梯队、容量、天数和情绪，这些门槛没有改。策略标签、龙虎榜、抢筹、概念资金和模拟盘都是附加信息，不参与入选。题材第几天、中军趋势、20日成交额、公告排雷未核的，仍是缺数据。",
     }
-    # 观察买点只写在未入选说明里，正式四王为空就不编造价位
-    common.save("data/latest.json", out)
-    common.save("data/official.json", official)
-    save_history_event(make_rebalance_event(official, old, cfg["weight_each"]))
+    # 观察买点只写在未入选说明里，正式四王为空就不编造价位。附加数据失败也不能改这四只的产生逻辑。
+    finish_outputs(out, stocks, cfg, asof, dates, failed, sources, official, old, True)
     print("情绪", sent["status"], sent["why"])
     print("题材", [(t["name"], t["n"], t["qualified"], t["day"]["state"], t["capacity"]["text"][:40]) for t in shown[:8]])
     print("四王", kings or "空", "未归类", untagged, "失败", failed)
@@ -791,6 +868,14 @@ def _self_test():
     assert "数据过期" in page and "T+1 open" in page and "涨停买不进" in page and "跌停卖不出" in page
     readme = open(os.path.join(common.ROOT, "README.md"), encoding="utf-8").read()
     assert "T+1 open" in readme and "涨停买不进" in readme and "数据过期" in readme
+    assert "InStock" in readme and "Apache-2.0" in readme
+    assert "模拟盘" in page and "策略标签" in page
+    workflow = open(os.path.join(common.ROOT, ".github", "workflows", "update.yml"), encoding="utf-8").read()
+    assert "data/paper.json" in workflow
+    import strategy_tags, enrich, paper
+    strategy_tags.self_test()
+    enrich.self_test()
+    paper.self_test()
     hist = json.load(open(os.path.join(common.ROOT, "data", "history.json"), encoding="utf-8"))
     by = {e["date"]: e for e in hist["events"]}
     for day in ("2026-11-06", "2026-11-09"):
