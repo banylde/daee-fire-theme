@@ -3,65 +3,90 @@
  "currency": "CNY",
  "initial_cash": 1000000.0,
  "cash": 1000000.0,
+ "buying_power": 1000000.0,
+ "settled_cash": 1000000.0,
+ "unsettled_proceeds": 0.0,
+ "locked_shares": 0,
  "equity": 1000000.0,
  "positions": [],
  "pending": [],
  "trades": [],
+ "settlements": [],
  "nav": [
   {
    "date": "2026-11-06",
    "equity": 1000000.0,
    "nav": 1.0,
-   "cash": 1000000.0,
    "hs300": 4054.28,
    "cyb": 2465.23,
    "hs300_nav": 1.0,
    "cyb_nav": 1.0,
-   "price_gap": false
+   "price_gap": false,
+   "locked_shares": 0,
+   "cash": 1000000.0,
+   "buying_power": 1000000.0,
+   "settled_cash": 1000000.0,
+   "unsettled_proceeds": 0.0
   },
   {
    "date": "2026-11-09",
    "equity": 1000000.0,
    "nav": 1.0,
-   "cash": 1000000.0,
    "hs300": 4056.11,
    "cyb": 2458.56,
    "hs300_nav": 1.000451,
    "cyb_nav": 0.997294,
-   "price_gap": false
+   "price_gap": false,
+   "locked_shares": 0,
+   "cash": 1000000.0,
+   "buying_power": 1000000.0,
+   "settled_cash": 1000000.0,
+   "unsettled_proceeds": 0.0
   },
   {
    "date": "2026-11-10",
    "equity": 1000000.0,
    "nav": 1.0,
-   "cash": 1000000.0,
    "hs300": 4059.11,
    "cyb": 2494.4,
    "hs300_nav": 1.001191,
    "cyb_nav": 1.011833,
-   "price_gap": false
+   "price_gap": false,
+   "locked_shares": 0,
+   "cash": 1000000.0,
+   "buying_power": 1000000.0,
+   "settled_cash": 1000000.0,
+   "unsettled_proceeds": 0.0
   },
   {
    "date": "2026-11-11",
    "equity": 1000000.0,
    "nav": 1.0,
-   "cash": 1000000.0,
    "hs300": 4075.71,
    "cyb": 2572.07,
    "hs300_nav": 1.005286,
    "cyb_nav": 1.043339,
-   "price_gap": false
+   "price_gap": false,
+   "locked_shares": 0,
+   "cash": 1000000.0,
+   "buying_power": 1000000.0,
+   "settled_cash": 1000000.0,
+   "unsettled_proceeds": 0.0
   },
   {
    "date": "2026-11-12",
    "equity": 1000000.0,
    "nav": 1.0,
-   "cash": 1000000.0,
    "hs300": 4043.93,
    "cyb": 2509.43,
    "hs300_nav": 0.997447,
    "cyb_nav": 1.017929,
-   "price_gap": false
+   "price_gap": false,
+   "locked_shares": 0,
+   "cash": 1000000.0,
+   "buying_power": 1000000.0,
+   "settled_cash": 1000000.0,
+   "unsettled_proceeds": 0.0
   }
  ],
  "metrics": {
@@ -78,20 +103,32 @@
   "hs300": "000300",
   "cyb": "399006"
  },
+ "calendar": {
+  "market": "SSE",
+  "status": "ok",
+  "count": 30,
+  "first": "2026-09-24",
+  "last": "2026-11-12",
+  "source": "与行情同一份上交所交易日：东财上证指数日K，失败则腾讯。不另做港股日历。"
+ },
  "rules": {
   "signal": "收盘计算信号",
   "fill": "次日开盘价",
+  "t_plus_sell": "A股 T+1：买入当日不可卖（调仓卖出同样不行），下一上交所交易日可卖，不等满 24 小时。锁定期间仍按收盘价计浮盈亏。",
+  "funds": "可卖与交收分开。卖出款当日可再买，买入立即占用现金。交收日只结束待交收，不重复增加现金。不模拟融资。",
   "commission": 0.0003,
   "slippage": 0.001,
   "stamp_sell": 0.0005,
   "lot": "100，科创板200",
-  "initial_cash": 1000000.0
+  "initial_cash": 1000000.0,
+  "calendar": "上交所指数日K（东财 sh000001，失败则腾讯）"
  },
  "gaps": [],
- "note": "虚拟资金。只按正式四王调仓记录建仓，策略标签不触发买卖。没有平仓时胜率、盈亏比、最大单笔亏损保持空值，不编造。",
+ "note": "虚拟资金。只按正式四王调仓记录建仓，策略标签不触发买卖。没有平仓时胜率、盈亏比、最大单笔亏损保持空值，不编造。A股买入当日不可卖，下一交易日可卖；卖出款当日可再买，交收不重复入账。",
  "asof": "2026-11-12",
- "updated_at": "2026-11-12 19:25",
+ "updated_at": "2026-11-12 20:22",
  "sources": [
+  "eastmoney-kline",
   "tencent-kline"
  ]
 }
