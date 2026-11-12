@@ -868,6 +868,8 @@ def _self_test():
     assert "数据过期" in page and "T+1 open" in page and "涨停买不进" in page and "跌停卖不出" in page
     readme = open(os.path.join(common.ROOT, "README.md"), encoding="utf-8").read()
     assert "T+1 open" in readme and "涨停买不进" in readme and "数据过期" in readme
+    assert "模拟盘现已遵循 A 股 T+1" in readme
+    assert "可用购买力" in page and "T+1锁定" in page
     assert "InStock" in readme and "Apache-2.0" in readme
     assert "模拟盘" in page and "策略标签" in page
     workflow = open(os.path.join(common.ROOT, ".github", "workflows", "update.yml"), encoding="utf-8").read()

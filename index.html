@@ -66,7 +66,7 @@ details.navday{margin-top:12px}details.navday summary{cursor:pointer;color:var(-
 <div class="brand">大鹅基金 · 火部题材短线看板</div>
 <h1>四王盗火</h1>
 <div class="tagline">火部 · 题材短线</div>
-<p class="fillnote">模拟盘：信号在信号日收盘后计算，按下一交易日开盘价成交（T+1 open）。涨停买不进，跌停卖不出。虚拟资金 100 万，不下单。</p>
+<p class="fillnote">模拟盘：信号在信号日收盘后计算，按下一交易日开盘价成交（T+1 open）。涨停买不进，跌停卖不出。模拟盘现已遵循 A 股 T+1：买入当日股份不可卖，下一交易日才可卖。虚拟资金 100 万，不下单。</p>
 <div id="meta">加载中…</div></div></header>
 <div id="stale" hidden></div>
 <div class="card warnbar" id="warn"></div>
@@ -168,17 +168,28 @@ function renderPaper(p){
   }
   const m=p.metrics||{},nav=p.nav||[];
   const pos=p.positions||[],trades=(p.trades||[]).slice(-12).reverse(),pending=p.pending||[];
+  const power=p.buying_power==null?p.cash:p.buying_power;
+  const locked=Number(p.locked_shares||0);
+  const gaps=(p.gaps||[]).filter(Boolean);
+  const unsettled=Number(p.unsettled_proceeds||0);
   el.innerHTML=`<h2>模拟盘</h2>
-<div class="chips">${chip("初始资金",yuan(p.initial_cash))}${chip("净值",p.equity==null?"数据缺失":yuan(p.equity))}${chip("累计收益",ratioPct(m.cum_return))}${chip("最大回撤",m.max_drawdown==null?"数据缺失":ratioPct(m.max_drawdown))}${chip("沪深300",ratioPct(m.hs300_return))}${chip("创业板指",ratioPct(m.cyb_return))}${chip("胜率",m.win_rate==null?"数据缺失":ratioPct(m.win_rate))}${chip("盈亏比",m.payoff==null?"数据缺失":Number(m.payoff).toFixed(2))}${chip("最大单笔亏损",m.max_loss==null?"数据缺失":yuan(m.max_loss))}${chip("已平仓",m.closed??0)}</div>
+<div class="chips">${chip("初始资金",yuan(p.initial_cash))}${chip("现金",yuan(p.cash))}${chip("可用购买力",yuan(power))}${chip("T+1锁定",locked?locked+"股":"0")}${chip("净值",p.equity==null?"数据缺失":yuan(p.equity))}${chip("累计收益",ratioPct(m.cum_return))}${chip("最大回撤",m.max_drawdown==null?"数据缺失":ratioPct(m.max_drawdown))}${chip("沪深300",ratioPct(m.hs300_return))}${chip("创业板指",ratioPct(m.cyb_return))}${chip("胜率",m.win_rate==null?"数据缺失":ratioPct(m.win_rate))}${chip("盈亏比",m.payoff==null?"数据缺失":Number(m.payoff).toFixed(2))}${chip("最大单笔亏损",m.max_loss==null?"数据缺失":yuan(m.max_loss))}${chip("已平仓",m.closed??0)}</div>
 ${navSvg(nav)}
-<p class="mute">${esc(p.note||"")} 佣金万 3 双边，滑点 0.1%，卖出印花税 0.05%。收盘计算信号，次日开盘价成交（T+1 open）。涨停买不进，跌停卖不出，不能成交就顺延。这是虚拟记账，不是下单。</p>
+<p class="mute">现金 ${yuan(p.cash)}，可用购买力 ${yuan(power)}，T+1 锁定 ${locked?locked+"股":"没有"}。${unsettled?`待交收 ${yuan(p.unsettled_proceeds)}，已交收 ${yuan(p.settled_cash)}。`:""}A股卖出款当日可再买，买入立即占用现金；交收不重复增加现金，不模拟融资。</p>
+<p class="mute">${esc(p.note||"")} 佣金万 3 双边，滑点 0.1%，卖出印花税 0.05%。收盘计算信号，次日开盘价成交（T+1 open）。涨停买不进，跌停卖不出，不能成交就顺延。买入当日股份不可卖，下一上交所交易日才可卖。这是虚拟记账，不是下单。</p>
+${gaps.length?`<p class="mute">缺口：${esc(gaps.join("；"))}</p>`:""}
 <h2>当前持仓</h2>
-${pos.length?`<div class="wrap"><table><thead><tr><th class="l">代码</th><th class="l">名称</th><th>股数</th><th>收盘价</th><th>市值</th><th>目标权重</th></tr></thead><tbody>${pos.map(r=>`<tr><td class="l">${esc(r.code)}</td><td class="l">${esc(r.name)}</td><td>${r.shares}</td><td>${r.close==null?"数据缺失":r.close}</td><td>${yuan(r.market_value)}</td><td>${r.target_weight||0}%</td></tr>`).join("")}</tbody></table></div>`:`<p>空仓。正式四王留空时资金停在现金，不编造持仓。现金 ${yuan(p.cash)}。</p>`}
+${pos.length?`<div class="wrap"><table><thead><tr><th class="l">代码</th><th class="l">名称</th><th>股数</th><th>可卖</th><th>T+1锁定</th><th>收盘价</th><th>市值</th><th>浮盈亏</th><th>目标权重</th></tr></thead><tbody>${pos.map(r=>{
+  const pnl=r.unrealized_pnl,lockN=Number(r.locked_shares||0);
+  const pnlCls=pnl==null?"":(pnl>0?"p":pnl<0?"n":"");
+  const lockTxt=lockN?(lockN+(r.sellable_date?" "+r.sellable_date+"起":"")):"0";
+  return `<tr><td class="l">${esc(r.code)}</td><td class="l">${esc(r.name)}</td><td>${r.shares}</td><td>${r.sellable_shares==null?r.shares:r.sellable_shares}</td><td>${esc(lockTxt)}</td><td>${r.close==null?"数据缺失":r.close}</td><td>${yuan(r.market_value)}</td><td class="${pnlCls}">${pnl==null?"—":yuan(pnl)}</td><td>${r.target_weight||0}%</td></tr>`;
+}).join("")}</tbody></table></div>`:`<p>空仓。正式四王留空时资金停在现金，不编造持仓。现金 ${yuan(p.cash)}，可用购买力 ${yuan(power)}，没有 T+1 锁定股份。</p>`}
 <h2>待成交</h2>
 ${pending.length?`<div class="wrap"><table><thead><tr><th class="l">代码</th><th class="l">方向</th><th>目标权重</th><th class="l">说明</th></tr></thead><tbody>${pending.map(r=>`<tr><td class="l">${esc(r.code)} ${esc(r.name||"")}</td><td class="l">${esc(r.side)}</td><td>${r.target_weight||0}%</td><td class="wrap">${esc(r.note||"")}</td></tr>`).join("")}</tbody></table></div>`:"<p class='mute'>没有待到下一交易日开盘的单。</p>"}
 <h2>最近交易</h2>
 ${trades.length?`<div class="wrap"><table class="min"><thead><tr><th class="l">日期</th><th class="l">代码</th><th class="l">方向</th><th>股数</th><th>开盘</th><th>成交价</th><th>金额</th><th>佣金</th><th>印花税</th><th class="l">说明</th></tr></thead><tbody>${trades.map(t=>`<tr><td class="l">${esc(t.date)}</td><td class="l">${esc(t.name||"")} ${esc(t.code)}</td><td class="l">${t.side==="buy"?"买":"卖"}</td><td>${t.shares}</td><td>${t.open}</td><td>${t.price}</td><td>${yuan(t.notional)}</td><td>${yuan(t.commission)}</td><td>${yuan(t.stamp)}</td><td class="wrap">${esc(t.note||"")}</td></tr>`).join("")}</tbody></table></div>`:"<p class='mute'>尚无成交。信号日收盘后才记账，成交在下一交易日开盘。</p>"}
-<details class="navday"><summary>每日净值</summary><div class="wrap"><table><thead><tr><th class="l">日期</th><th>权益</th><th>净值</th><th>现金</th><th>沪深300</th><th>创业板指</th></tr></thead><tbody>${nav.map(r=>`<tr><td class="l">${esc(r.date)}</td><td>${yuan(r.equity)}</td><td>${r.nav==null?"—":Number(r.nav).toFixed(4)}</td><td>${yuan(r.cash)}</td><td>${r.hs300_nav==null?"数据缺失":Number(r.hs300_nav).toFixed(4)}</td><td>${r.cyb_nav==null?"数据缺失":Number(r.cyb_nav).toFixed(4)}</td></tr>`).join("")}</tbody></table></div></details>`;
+<details class="navday"><summary>每日净值</summary><div class="wrap"><table><thead><tr><th class="l">日期</th><th>权益</th><th>净值</th><th>现金</th><th>购买力</th><th>T+1锁定</th><th>沪深300</th><th>创业板指</th></tr></thead><tbody>${nav.map(r=>`<tr><td class="l">${esc(r.date)}</td><td>${yuan(r.equity)}</td><td>${r.nav==null?"—":Number(r.nav).toFixed(4)}</td><td>${yuan(r.cash)}</td><td>${yuan(r.buying_power==null?r.cash:r.buying_power)}</td><td>${r.locked_shares||0}</td><td>${r.hs300_nav==null?"数据缺失":Number(r.hs300_nav).toFixed(4)}</td><td>${r.cyb_nav==null?"数据缺失":Number(r.cyb_nav).toFixed(4)}</td></tr>`).join("")}</tbody></table></div></details>`;
 }
 document.getElementById("screener").addEventListener("click",e=>{
   const b=e.target.closest("button[data-tag]");
@@ -221,7 +232,7 @@ const ks=d.kings||[];
 document.getElementById("kings").innerHTML=`<h2>四王</h2>`+(ks.length?`<div class="wrap"><table><thead><tr><th class="l">代码</th><th class="l">名称</th><th class="l">题材</th><th class="l">角色</th><th class="l">观察买点</th><th class="l">止损位</th><th>建议仓位</th></tr></thead><tbody>${ks.map(k=>`<tr><td class="l">${k.code}</td><td class="l">${k.name}</td><td class="l">${k.theme}</td><td class="l">${k.role}</td><td class="wrap">${k.buy||"缺数据"}</td><td class="wrap">${k.stop||"缺数据"}</td><td>${k.weight}%</td></tr>`).join("")}</tbody></table></div>`:`<p>本日四王留空，不凑数。名单变动：${(d.official.changes||[]).join("；")||"无"}。有正式四王之后，这里记调入调出。</p>`);
 document.getElementById("rule").innerHTML=`<h2 style="color:var(--fg)">口径（研究，不下单）</h2>
 <p><b>市场</b>：T+1。主板 10%，创业板和科创板 20%，ST 5%，北交所 30%。</p>
-<p><b>模拟盘</b>：信号在信号日收盘后计算，下一交易日开盘价成交（T+1 open）。涨停买不进，跌停卖不出，不能成交就顺延。初始虚拟资金 100 万，只按正式四王的名单和权重调仓。佣金万 3 双边，滑点 0.1%，卖出印花税 0.05%。没有平仓时，胜率、盈亏比、最大单笔亏损保持数据缺失，不编造。单笔止损的研究口径仍是买入价下方 ${C.stop_pct}%，模拟盘本身不代为触发止损。</p>
+<p><b>模拟盘</b>：信号在信号日收盘后计算，下一交易日开盘价成交（T+1 open）。涨停买不进，跌停卖不出，不能成交就顺延。初始虚拟资金 100 万，只按正式四王的名单和权重调仓。佣金万 3 双边，滑点 0.1%，卖出印花税 0.05%。没有平仓时，胜率、盈亏比、最大单笔亏损保持数据缺失，不编造。模拟盘现已遵循 A 股 T+1：买入当日股份不可卖，自动调仓也一样，下一上交所交易日才可卖，不等满 24 小时。卖出款当日可再买。页面分开显示现金、可用购买力和 T+1 锁定股数。单笔止损的研究口径仍是买入价下方 ${C.stop_pct}%，模拟盘本身不代为触发止损；锁定期间错过的卖出，到可卖日按当时开盘价和涨跌停再决定。</p>
 <p><b>策略标签</b>：放量上涨、停机坪、回踩年线、突破平台、无大幅回撤、均线多头，只作为候选池的辅助标签和可选初筛。正式四王的规则和阈值没有改。</p>
 <p><b>可做题材要四条一起过</b>：有催化（脚本定不了就标待人工确认，写入 config.json 的 manual_catalyst 才算通过）；梯队为当日涨停至少 ${C.echelon_min} 只且有 ${C.lbc_min} 板以上；容量为板块成交额放大且有中军；处在启动或加速的第 2 到 4 天。第 5 天以上和一日游不做。天数要靠逐日题材档案积累，本轮还没有这份档案，天数一律缺数据。调仓记录在 data/history.json，不是题材天数。</p>
 <p><b>归类</b>：用同花顺涨停原因，按「+」分段，跳过三季报、重组、国资这类标签，取第一个词典题材。带引号或写明字辈的，归入字面博弈，不算催化。词典在 config.json。原因对不上的涨停不进题材梯队（本页未归类 ${d.untagged} 只${(d.untagged_names||[]).length?"："+(d.untagged_names||[]).join("、"):""}）。</p>

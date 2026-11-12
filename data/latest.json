@@ -927,6 +927,10 @@
   "initial": 1000000.0,
   "equity": 1000000.0,
   "cash": 1000000.0,
+  "buying_power": 1000000.0,
+  "settled_cash": 1000000.0,
+  "unsettled_proceeds": 0.0,
+  "locked_shares": 0,
   "cum_return": 0.0,
   "max_drawdown": 0.0,
   "win_rate": null,
@@ -935,7 +939,7 @@
   "closed": 0,
   "hs300_return": -0.002553,
   "cyb_return": 0.017929,
-  "note": "虚拟资金。只按正式四王调仓记录建仓，策略标签不触发买卖。没有平仓时胜率、盈亏比、最大单笔亏损保持空值，不编造。",
+  "note": "虚拟资金。只按正式四王调仓记录建仓，策略标签不触发买卖。没有平仓时胜率、盈亏比、最大单笔亏损保持空值，不编造。A股买入当日不可卖，下一交易日可卖；卖出款当日可再买，交收不重复入账。",
   "source": "data/paper.json"
  },
  "config": {
