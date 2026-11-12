@@ -51,6 +51,17 @@
    "hs300_nav": 1.005286,
    "cyb_nav": 1.043339,
    "price_gap": false
+  },
+  {
+   "date": "2026-11-12",
+   "equity": 1000000.0,
+   "nav": 1.0,
+   "cash": 1000000.0,
+   "hs300": 4043.93,
+   "cyb": 2509.43,
+   "hs300_nav": 0.997447,
+   "cyb_nav": 1.017929,
+   "price_gap": false
   }
  ],
  "metrics": {
@@ -60,8 +71,8 @@
   "payoff": null,
   "max_loss": null,
   "closed": 0,
-  "hs300_return": 0.005286,
-  "cyb_return": 0.043339
+  "hs300_return": -0.002553,
+  "cyb_return": 0.017929
  },
  "benchmarks": {
   "hs300": "000300",
@@ -78,8 +89,8 @@
  },
  "gaps": [],
  "note": "虚拟资金。只按正式四王调仓记录建仓，策略标签不触发买卖。没有平仓时胜率、盈亏比、最大单笔亏损保持空值，不编造。",
- "asof": "2026-11-11",
- "updated_at": "2026-11-11 23:27",
+ "asof": "2026-11-12",
+ "updated_at": "2026-11-12 16:40",
  "sources": [
   "tencent-kline"
  ]
