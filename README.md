@@ -15,6 +15,7 @@
 - `data/history.json`：正式调仓记录。字段是日期、调入、调出、调仓后权重、原因。只收 `official.json` 里已经发生的调仓
 - `.github/workflows/update.yml`：周一至周五北京时间 15:40 和 18:30 各跑一轮，也可在 Actions 页手动 Run workflow
 - `index.html` / `manifest.webmanifest` / `sw.js` / `icons/`：前端与 PWA
+- `vendor/lightweight-charts/`：净值图用的 TradingView Lightweight Charts™ 5.3.0（Apache-2.0）。来源、版本和校验写在该目录的 README
 
 本地：`python3 scripts/build.py`。指定日期：`ASOF=2026-11-06 python3 scripts/build.py`。
 
@@ -76,6 +77,8 @@
 - 没有平仓时，胜率、盈亏比、最大单笔亏损保持空值，不编造
 
 这是记账，不是下单。正式四王一直为空时，模拟盘就停在现金。
+
+净值曲线用仓库里的 TradingView Lightweight Charts™ 5.3.0（`vendor/lightweight-charts/lightweight-charts.standalone.production.js`，standalone IIFE，Apache-2.0）。页面只读 `data/paper.json` 已有的 `nav`、`hs300_nav`、`cyb_nav`，不另拉行情，也不为缺失的基准补数。脚本没有加载成功时，改回页面自带的 SVG 曲线，并写明原因。
 
 ## 纸面成交约定
 
