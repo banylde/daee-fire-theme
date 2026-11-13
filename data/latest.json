@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-13 23:40",
+ "updated_at": "2026-11-14 01:56",
  "data_date": "2026-11-13",
  "stale": false,
  "stale_reason": "",
@@ -19,7 +19,7 @@
   "tencent-kline"
  ],
  "failed": [
-  "概念资金流向未取全 300/554"
+  "概念资金流向未取全 400/554"
  ],
  "ths_total": 37,
  "zt_count": 37,
@@ -537,8 +537,15 @@
     }
    ],
    "concept_flow": {
-    "status": "未匹配",
-    "text": "未匹配到概念板块"
+    "status": "ok",
+    "text": "-18.06亿（-2.86%）算力租赁",
+    "concept": "算力租赁",
+    "concept_code": "BK1792",
+    "main_net": -1806403840.0,
+    "main_pct": -2.86,
+    "pct": -1.29,
+    "top_name": "南威软件",
+    "top_code": "603636"
    }
   }
  ],
@@ -1171,7 +1178,7 @@
    "四王留空，不凑数"
   ],
   "items": [],
-  "computed_at": "2026-11-13 23:40"
+  "computed_at": "2026-11-14 01:56"
  },
  "monitor": [
   {
@@ -2904,6 +2911,17 @@
     "pct": -0.63,
     "top_name": "江淮汽车",
     "top_code": "600418"
+   },
+   {
+    "id": "compute",
+    "name": "算力",
+    "concept": "算力租赁",
+    "concept_code": "BK1792",
+    "main_net": -1806403840.0,
+    "main_pct": -2.86,
+    "pct": -1.29,
+    "top_name": "南威软件",
+    "top_code": "603636"
    }
   ],
   "top": [
@@ -2980,7 +2998,7 @@
     "top_code": "600887"
    }
   ],
-  "count": 300,
+  "count": 400,
   "date": "2026-11-13"
  },
  "strategy_rules": [
