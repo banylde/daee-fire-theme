@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-19 00:42",
+ "updated_at": "2026-11-19 02:56",
  "data_date": "2026-11-18",
  "stale": false,
  "stale_reason": "",
@@ -15,8 +15,7 @@
   "eastmoney-lhb",
   "tdx-chip-open",
   "tdx-chip-end",
-  "eastmoney-kline",
-  "tencent-kline"
+  "eastmoney-kline"
  ],
  "failed": [
   "概念资金流向：HTTP Error 502: Bad Gateway"
@@ -1265,7 +1264,7 @@
    "四王留空，不凑数"
   ],
   "items": [],
-  "computed_at": "2026-11-19 00:42"
+  "computed_at": "2026-11-19 02:56"
  },
  "monitor": [
   {
