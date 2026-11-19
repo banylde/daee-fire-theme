@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-20 00:46",
+ "updated_at": "2026-11-20 03:05",
  "data_date": "2026-11-19",
  "stale": false,
  "stale_reason": "",
@@ -8,6 +8,7 @@
  "next_date": "2026-11-20",
  "sources": [
   "eastmoney-zt",
+  "tencent-calendar-backup",
   "ths-limit-up",
   "eastmoney-monitor",
   "eastmoney-prev",
@@ -15,10 +16,10 @@
   "eastmoney-lhb",
   "tdx-chip-open",
   "tdx-chip-end",
-  "eastmoney-kline",
   "tencent-kline"
  ],
  "failed": [
+  "东财交易日历：Remote end closed connection without response",
   "概念资金流向：HTTP Error 502: Bad Gateway"
  ],
  "ths_total": 23,
@@ -833,7 +834,7 @@
    "四王留空，不凑数"
   ],
   "items": [],
-  "computed_at": "2026-11-20 00:46"
+  "computed_at": "2026-11-20 03:05"
  },
  "monitor": [
   {
