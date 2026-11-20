@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-21 00:21",
+ "updated_at": "2026-11-21 02:41",
  "data_date": "2026-11-20",
  "stale": false,
  "stale_reason": "",
@@ -16,8 +16,7 @@
   "tdx-chip-open",
   "tdx-chip-end",
   "eastmoney-concept-flow",
-  "eastmoney-kline",
-  "tencent-kline"
+  "eastmoney-kline"
  ],
  "failed": [
   "概念资金流向未取全 300/554"
@@ -882,7 +881,7 @@
    "四王留空，不凑数"
   ],
   "items": [],
-  "computed_at": "2026-11-21 00:21"
+  "computed_at": "2026-11-21 02:41"
  },
  "monitor": [
   {
