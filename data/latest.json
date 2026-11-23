@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-24 03:28",
+ "updated_at": "2026-11-24 06:08",
  "data_date": "2026-11-23",
  "stale": false,
  "stale_reason": "",
@@ -16,11 +16,10 @@
   "tdx-chip-open",
   "tdx-chip-end",
   "eastmoney-concept-flow",
-  "eastmoney-kline",
   "tencent-kline"
  ],
  "failed": [
-  "概念资金流向未取全 400/554"
+  "概念资金流向未取全 300/554"
  ],
  "ths_total": 145,
  "zt_count": 146,
@@ -1376,12 +1375,12 @@
    ],
    "concept_flow": {
     "status": "ok",
-    "text": "+1.95亿（+0.06%）半导体概念",
-    "concept": "半导体概念",
-    "concept_code": "BK0917",
-    "main_net": 195443456.0,
-    "main_pct": 0.06,
-    "pct": 3.52,
+    "text": "+22.70亿（+0.71%）芯片概念",
+    "concept": "芯片概念",
+    "concept_code": "BK0891",
+    "main_net": 2270431488.0,
+    "main_pct": 0.71,
+    "pct": 3.57,
     "top_name": "瑞芯微",
     "top_code": "603893"
    }
@@ -4552,7 +4551,7 @@
    "四王留空，不凑数"
   ],
   "items": [],
-  "computed_at": "2026-11-24 03:28"
+  "computed_at": "2026-11-24 06:08"
  },
  "monitor": [
   {
@@ -6409,11 +6408,11 @@
    {
     "id": "semi",
     "name": "半导体",
-    "concept": "半导体概念",
-    "concept_code": "BK0917",
-    "main_net": 195443456.0,
-    "main_pct": 0.06,
-    "pct": 3.52,
+    "concept": "芯片概念",
+    "concept_code": "BK0891",
+    "main_net": 2270431488.0,
+    "main_pct": 0.71,
+    "pct": 3.57,
     "top_name": "瑞芯微",
     "top_code": "603893"
    },
@@ -6514,7 +6513,7 @@
     "top_code": "300502"
    }
   ],
-  "count": 400,
+  "count": 300,
   "date": "2026-11-23"
  },
  "strategy_rules": [
