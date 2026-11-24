@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-25 03:04",
+ "updated_at": "2026-11-25 04:44",
  "data_date": "2026-11-24",
  "stale": false,
  "stale_reason": "",
@@ -20,7 +20,7 @@
   "tencent-kline"
  ],
  "failed": [
-  "概念资金流向未取全 200/554"
+  "概念资金流向未取全 400/554"
  ],
  "ths_total": 55,
  "zt_count": 55,
@@ -1793,7 +1793,7 @@
    "四王留空，不凑数"
   ],
   "items": [],
-  "computed_at": "2026-11-25 03:04"
+  "computed_at": "2026-11-25 04:44"
  },
  "monitor": [
   {
@@ -3648,7 +3648,7 @@
     "top_code": "601138"
    }
   ],
-  "count": 200,
+  "count": 400,
   "date": "2026-11-24"
  },
  "strategy_rules": [
