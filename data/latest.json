@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-26 02:10",
+ "updated_at": "2026-11-26 04:01",
  "data_date": "2026-11-25",
  "stale": false,
  "stale_reason": "",
@@ -16,11 +16,11 @@
   "tdx-chip-open",
   "tdx-chip-end",
   "eastmoney-concept-flow",
-  "eastmoney-kline"
+  "eastmoney-kline",
+  "tencent-kline"
  ],
  "failed": [
-  "涨停详因数据缺失 1 只，短原因仍保留",
-  "概念资金流向未取全 300/554"
+  "概念资金流向未取全 500/554"
  ],
  "ths_total": 51,
  "zt_count": 51,
@@ -174,8 +174,15 @@
     }
    ],
    "concept_flow": {
-    "status": "未匹配",
-    "text": "未匹配到概念板块"
+    "status": "ok",
+    "text": "-25.41亿（-5.21%）算力租赁",
+    "concept": "算力租赁",
+    "concept_code": "BK1792",
+    "main_net": -2541452080.0,
+    "main_pct": -5.21,
+    "pct": -4.96,
+    "top_name": "证通电子",
+    "top_code": "002197"
    }
   },
   {
@@ -512,7 +519,7 @@
    ],
    "limitup_reason": "机器人投资+厨房小家电+“羊”字辈",
    "limitup_reason_source": "ths-getharden",
-   "limitup_detail": "数据缺失",
+   "limitup_detail": "1、据2026年11月18日股票交易异常波动暨风险提示公告，公司持有深思考7.92%股权，其深耕类脑人工智能与多模态语义理解技术，公司通过全资子公司参股享刻智能，以财务性投资方式布局机器人相关领域，相关业务尚处于早期阶段。2、据2026年9月30日股票交易异常波动公告，公司主营厨房小家电及相关产品研发、生产和销售；据2025年11月13日互动易，公司是市场上较早推出炒菜机器人产品的公司。3、据中证报2026年10月27日报道，2027年为羊年，近期部分A股名称中带有“羊、洋、",
    "lhb_text": "净买 +3.72亿 连续三个交易日内，涨幅偏离值累计达到20%的证券；日涨幅偏离值达到7%的前5只证券",
    "lhb_net": 371951633.96,
    "chip_open_text": "幅度+6.79% 占比37.5%",
@@ -722,7 +729,7 @@
    "四王留空，不凑数"
   ],
   "items": [],
-  "computed_at": "2026-11-26 02:10"
+  "computed_at": "2026-11-26 04:01"
  },
  "monitor": [
   {
@@ -871,7 +878,7 @@
   "status": "ok",
   "date": "2026-11-25",
   "count": 57,
-  "detail_missing": 1
+  "detail_missing": 0
  },
  "lhb": {
   "status": "ok",
@@ -2446,6 +2453,17 @@
   "error": "",
   "matched": [
    {
+    "id": "compute",
+    "name": "算力",
+    "concept": "算力租赁",
+    "concept_code": "BK1792",
+    "main_net": -2541452080.0,
+    "main_pct": -5.21,
+    "pct": -4.96,
+    "top_name": "证通电子",
+    "top_code": "002197"
+   },
+   {
     "id": "robot",
     "name": "机器人",
     "concept": "虚拟机器人",
@@ -2542,7 +2560,7 @@
     "top_code": "600103"
    }
   ],
-  "count": 300,
+  "count": 500,
   "date": "2026-11-25"
  },
  "strategy_rules": [
