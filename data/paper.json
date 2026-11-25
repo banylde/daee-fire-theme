@@ -207,6 +207,21 @@
    "buying_power": 1000000.0,
    "settled_cash": 1000000.0,
    "unsettled_proceeds": 0.0
+  },
+  {
+   "date": "2026-11-25",
+   "equity": 1000000.0,
+   "nav": 1.0,
+   "hs300": 3898.24,
+   "cyb": 2183.58,
+   "hs300_nav": 0.961512,
+   "cyb_nav": 0.885751,
+   "price_gap": false,
+   "locked_shares": 0,
+   "cash": 1000000.0,
+   "buying_power": 1000000.0,
+   "settled_cash": 1000000.0,
+   "unsettled_proceeds": 0.0
   }
  ],
  "metrics": {
@@ -216,8 +231,8 @@
   "payoff": null,
   "max_loss": null,
   "closed": 0,
-  "hs300_return": -0.022312,
-  "cyb_return": -0.075547
+  "hs300_return": -0.038488,
+  "cyb_return": -0.114249
  },
  "benchmarks": {
   "hs300": "000300",
@@ -227,8 +242,8 @@
   "market": "SSE",
   "status": "ok",
   "count": 30,
-  "first": "2026-10-14",
-  "last": "2026-11-24",
+  "first": "2026-10-15",
+  "last": "2026-11-25",
   "source": "与行情同一份上交所交易日：东财上证指数日K，失败则腾讯。不另做港股日历。"
  },
  "rules": {
@@ -245,8 +260,8 @@
  },
  "gaps": [],
  "note": "虚拟资金。只按正式四王调仓记录建仓，策略标签不触发买卖。没有平仓时胜率、盈亏比、最大单笔亏损保持空值，不编造。A股买入当日不可卖，下一交易日可卖；卖出款当日可再买，交收不重复入账。",
- "asof": "2026-11-24",
- "updated_at": "2026-11-25 04:44",
+ "asof": "2026-11-25",
+ "updated_at": "2026-11-26 02:10",
  "sources": [
   "eastmoney-kline",
   "tencent-kline"
