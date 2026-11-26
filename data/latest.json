@@ -1,8 +1,8 @@
 {
  "updated_at": "2026-11-27 01:53",
  "data_date": "2026-11-26",
- "stale": false,
- "stale_reason": "",
+ "stale": true,
+ "stale_reason": "交易日历主源与备用都失败：Remote end closed connection without response；腾讯：HTTP Error 501: Not Implemented。沿用上一份数据，不编造行情。",
  "expected_date": "2026-11-26",
  "prev_date": "2026-11-25",
  "next_date": "2026-11-27",
@@ -16,10 +16,18 @@
   "eastmoney-lhb",
   "tdx-chip-open",
   "tdx-chip-end",
-  "tencent-kline"
+  "tencent-kline",
+  "ths-limitup-reason",
+  "eastmoney-lhb",
+  "tdx-chip-open",
+  "tdx-chip-end",
+  "sina-kline"
  ],
  "failed": [
   "东财交易日历：Remote end closed connection without response",
+  "概念资金流向：HTTP Error 502: Bad Gateway",
+  "交易日历主源与备用都失败：Remote end closed connection without response；腾讯：HTTP Error 501: Not Implemented。沿用上一份数据，不编造行情。",
+  "附加数据交易日历：交易日历主源与备用都失败：Remote end closed connection without response；腾讯：HTTP Error 501: Not Implemented。沿用上一份数据，不编造行情。",
   "概念资金流向：HTTP Error 502: Bad Gateway"
  ],
  "ths_total": 65,
@@ -1511,7 +1519,7 @@
   "max_loss": null,
   "closed": 0,
   "hs300_return": -0.037918,
-  "cyb_return": -0.111718,
+  "cyb_return": -0.111717,
   "note": "虚拟资金。只按正式四王调仓记录建仓，策略标签不触发买卖。没有平仓时胜率、盈亏比、最大单笔亏损保持空值，不编造。A股买入当日不可卖，下一交易日可卖；卖出款当日可再买，交收不重复入账。",
   "source": "data/paper.json"
  },
@@ -1528,7 +1536,7 @@
   "float_mid_max_yi": 300,
   "amount_avg_yi": 2
  },
- "scope_note": "正式四王仍只看催化、梯队、容量、天数和情绪，这些门槛没有改。策略标签、龙虎榜、抢筹、概念资金和模拟盘都是附加信息，不参与入选。题材第几天、中军趋势、20日成交额、公告排雷未核的，仍是缺数据。",
+ "scope_note": "正式四王仍只看催化、梯队、容量、天数和情绪，这些门槛没有改。策略标签、龙虎榜、抢筹、概念资金和模拟盘都是附加信息，不参与入选。题材第几天、中军趋势、20日成交额、公告排雷未核的，仍是缺数据。 策略标签和模拟盘是附加信息，不改变已经留下的四王数字。",
  "limitup_reason": {
   "status": "ok",
   "date": "2026-11-26",
