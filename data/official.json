@@ -1,16 +1,15 @@
 {
- "rebalance_date": "2026-11-26",
- "next_rebalance": "2026-11-27",
+ "rebalance_date": "2026-11-27",
+ "next_rebalance": "2026-11-30",
  "freq": "daily",
  "codes": [],
  "prev_codes": [],
  "prev_items": [],
- "prev_rebalance_date": "2026-11-25",
+ "prev_rebalance_date": "2026-11-26",
  "changes": [
   "没有题材同时通过催化、梯队、容量、天数",
-  "情绪退潮，新开仓压到半仓以下（最多1只、7.5%）",
   "四王留空，不凑数"
  ],
  "items": [],
- "computed_at": "2026-11-27 01:53"
+ "computed_at": "2026-11-28 01:38"
 }
